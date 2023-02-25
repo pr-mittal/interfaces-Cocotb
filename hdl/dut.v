@@ -138,14 +138,14 @@ module dut(CLK,
   wire current_count_PLUS_1_EQ_programmed_length___d8;
 
   // action method din
-  assign din_rdy = (busy || !pause) && dout_ff$FULL_N ;
+  assign din_rdy = (busy || !pause) && dout_ff$FULL_N && programmed_length;
 
   // actionvalue method dout
   assign dout_value = dout_ff$D_OUT ;
   assign dout_rdy = dout_ff$EMPTY_N ;
 
   // action method len
-  assign len_rdy = 1'd1 ;
+  assign len_rdy =  !busy && dout_ff$FULL_N && !programmed_length;
 
   // actionvalue method cfg
   assign cfg_data_out =
@@ -179,7 +179,7 @@ module dut(CLK,
   // register current_count
   assign current_count$D_IN = next_count__h523 ;
   assign current_count$EN =
-	     din_en && !current_count_PLUS_1_EQ_programmed_length___d8 ;
+	     din_en && !current_count_PLUS_1_EQ_programmed_length___d8  && programmed_length;
 
   // register pause
   assign pause$D_IN = cfg_data_in[1] ;
@@ -196,7 +196,7 @@ module dut(CLK,
 
   // register sum
   assign sum$D_IN = sum + din_value ;
-  assign sum$EN = din_en && !current_count_PLUS_1_EQ_programmed_length___d8 ;
+  assign sum$EN = din_en && !current_count_PLUS_1_EQ_programmed_length___d8 && programmed_length;
 
   // register sw_override
   assign sw_override$D_IN = cfg_data_in[0] ;
@@ -231,7 +231,7 @@ module dut(CLK,
   // handling of inlined registers
 
   always@(posedge CLK or `BSV_RESET_EDGE RST_N)
-  if (RST_N == `BSV_RESET_VALUE)
+  if (RST_N == `BSV_RESET_VALUE || next_count__h523==programmed_length)
     begin
       busy <= `BSV_ASSIGNMENT_DELAY 1'd0;
       current_count <= `BSV_ASSIGNMENT_DELAY 8'd0;
