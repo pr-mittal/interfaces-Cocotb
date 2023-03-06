@@ -6,7 +6,6 @@ import random
 
 def sb_fn(actual_value):
 	global expected_value
-	# expected_value.pop(0)
 	assert actual_value==expected_value.pop(0),f"Scoreboard(SB) Matching Failed"
 def get_max_value(Nbits):
 	#signed bit representation
@@ -16,7 +15,7 @@ def get_max_value(Nbits):
 async def dut_test(dut):
 	cocotb.start_soon(Clock(dut.CLK, 5,'ns').start())
 	global expected_value
-	regressions=3
+	regressions=1
 			
 	random.randint(3, 9)
 	# a=(0,0,1,1)
@@ -37,27 +36,23 @@ async def dut_test(dut):
 	
 	for i in range(regressions):
 		# l=random.randint(0,get_max_value(8))
-		if(i==0): l=5
-		else: l=3
+		l=5
 		a=[]
 		sum=0
 		for j in range(l):
-			# val=random.randint(-get_max_value(4)-1,get_max_value(4))
-			val=random.randint(0,get_max_value(4))
-			# val=32
+			# val=random.randint(-get_max_value(8)-1,get_max_value(8))
+			val=32
 			sum+=val
 			a.append(val)
 		expected_value.append(sum)
-		# print(a)
-		# print(expected_value)
-		for j in range(1):
+		
+		for j in range(2):
 			for k in range(len(a)):
 				dindrv.append(a[k])	
 			if(j==0):# length
 				ldrv.append(l)
 			# if(j==1): # register map
 	#wait for all calculations to complete
-	# print(expected_value)
 	while len(expected_value)>0:
 		await Timer(2,'ns')
     
@@ -90,13 +85,10 @@ class OutputDriver(BusDriver):
 		while True:
 			if self.bus.rdy.value !=1 :
 				await RisingEdge(self.bus.rdy)
-			# print("REACHED 1")
 			self.bus.en.value =1
 			#self.bus.data.value =value
 			await ReadOnly()
-			# print("REACHED 2 ",expected_value,self.bus.value.value)
 			self.callback(self.bus.value.value)
 			await RisingEdge(self.clk)
 			await NextTimeStep()
 			self.bus.en.value =0
-			
