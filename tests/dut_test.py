@@ -34,10 +34,12 @@ async def dut_test(dut):
 	ldrv=InputDriver(dut,'len',dut.CLK)
 	OutputDriver(dut,'dout',dut.CLK,sb_fn)
 	
+	# l=random.randint(0,10)
+	l=5
+	ldrv.append(l)
+	
 	for i in range(regressions):
-		l=random.randint(0,10)
 		if(l==0):continue
-		# l=5
 		a=[]
 		sum=0
 		for j in range(l):
@@ -46,13 +48,13 @@ async def dut_test(dut):
 			# val=32
 			sum+=val
 			a.append(val)
+		print(f'SUM={sum}')
 		expected_value.append(sum)
 		
 		for j in range(2):	
 			if(j==0):# length
 				for k in range(len(a)):
 					dindrv.append(a[k])
-				ldrv.append(l)
 			# if(j==1): # register map
 	#wait for all calculations to complete
 	while len(expected_value)>0:

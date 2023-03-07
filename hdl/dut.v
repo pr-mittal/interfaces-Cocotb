@@ -191,8 +191,8 @@ module dut(CLK,
 	       len_value :
 	       cfg_data_in[7:0] ;
   assign programmed_length$EN =
-	     (len_en && !sw_override ||
-	     cfg_en && cfg_op && cfg_address == 8'd8 && sw_override) && !busy ;
+	     (len_en && !sw_override && !busy )||
+	     (cfg_en && cfg_op && cfg_address == 8'd8 && sw_override) ;
 
   // register sum
   assign sum$D_IN = sum + din_value ;
@@ -242,17 +242,30 @@ module dut(CLK,
     end
   else
     begin
+      if(programmed_length$EN && pause)
+        begin
+          //wait for len_en
+          current_count <= `BSV_ASSIGNMENT_DELAY 8'd0;
+          sum <= `BSV_ASSIGNMENT_DELAY 8'd0;
+          programmed_length <= `BSV_ASSIGNMENT_DELAY programmed_length$D_IN;
+        end
+      else if(din_en && current_count_PLUS_1_EQ_programmed_length___d8 && !pause)
+        begin
+          //use the previously stored value
+          current_count <= `BSV_ASSIGNMENT_DELAY 8'd0;
+          sum <= `BSV_ASSIGNMENT_DELAY 8'd0;
+        end
+      else 
+        begin
+          if (current_count$EN) current_count <= `BSV_ASSIGNMENT_DELAY current_count$D_IN;
+          if (sum$EN) sum <= `BSV_ASSIGNMENT_DELAY sum$D_IN;
+          if (programmed_length$EN) programmed_length <= `BSV_ASSIGNMENT_DELAY programmed_length$D_IN;
+        end
       if (busy$EN) busy <= `BSV_ASSIGNMENT_DELAY busy$D_IN;
-      if (current_count$EN)
-	current_count <= `BSV_ASSIGNMENT_DELAY current_count$D_IN;
       if (pause$EN) pause <= `BSV_ASSIGNMENT_DELAY pause$D_IN;
-      if (programmed_length$EN)
-	programmed_length <= `BSV_ASSIGNMENT_DELAY programmed_length$D_IN;
-      if (sum$EN) sum <= `BSV_ASSIGNMENT_DELAY sum$D_IN;
-      if (sw_override$EN)
-	sw_override <= `BSV_ASSIGNMENT_DELAY sw_override$D_IN;
+      if (sw_override$EN) sw_override <= `BSV_ASSIGNMENT_DELAY sw_override$D_IN;
     end
-
+    
   // synopsys translate_off
   `ifdef BSV_NO_INITIAL_BLOCKS
   `else // not BSV_NO_INITIAL_BLOCKS
