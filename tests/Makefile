@@ -6,7 +6,13 @@ VERILOG_SOURCES += $(PWD)/wrappers/dut_test.v
 
 # MODULE is the basename of the Python test file
 # TOPLEVEL is the name of the toplevel module in your Verilog or VHDL file
-dut:
+basic:
 	rm -rf sim_build
 	$(MAKE) sim MODULE=dut_test TOPLEVEL=dut_test
+directed:
+	rm -rf sim_build
+	$(MAKE) sim MODULE=TC_1_FIFO TOPLEVEL=dut_test
+random:
+	rm -rf sim_build
+	$(MAKE) sim MODULE=TC_5_PROTOCOL_VERIF TOPLEVEL=dut_test
 include $(shell cocotb-config --makefiles)/Makefile.sim

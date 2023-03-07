@@ -138,14 +138,14 @@ module dut(CLK,
   wire current_count_PLUS_1_EQ_programmed_length___d8;
 
   // action method din
-  assign din_rdy = (busy || !pause) && dout_ff$FULL_N ;
+  assign din_rdy = (busy || !pause) && dout_ff$FULL_N && programmed_length;
 
   // actionvalue method dout
   assign dout_value = dout_ff$D_OUT ;
   assign dout_rdy = dout_ff$EMPTY_N ;
 
   // action method len
-  assign len_rdy = 1'd1 ;
+  assign len_rdy = !busy && !sw_override;
 
   // actionvalue method cfg
   assign cfg_data_out =
@@ -173,7 +173,7 @@ module dut(CLK,
   assign w_sw_override$whas = cfg_en && cfg_op && cfg_address == 8'd4 ;
 
   // register busy
-  assign busy$D_IN = !current_count_PLUS_1_EQ_programmed_length___d8 ;
+  assign busy$D_IN = !current_count_PLUS_1_EQ_programmed_length___d8 && programmed_length;
   assign busy$EN = din_en ;
 
   // register current_count
@@ -191,8 +191,8 @@ module dut(CLK,
 	       len_value :
 	       cfg_data_in[7:0] ;
   assign programmed_length$EN =
-	     len_en && !sw_override && !busy ||
-	     cfg_en && cfg_op && cfg_address == 8'd8 && sw_override ;
+	     (len_en && !sw_override ||
+	     cfg_en && cfg_op && cfg_address == 8'd8 && sw_override) && !busy ;
 
   // register sum
   assign sum$D_IN = sum + din_value ;
