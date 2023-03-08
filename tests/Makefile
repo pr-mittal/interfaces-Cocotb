@@ -9,9 +9,12 @@ VERILOG_SOURCES += $(PWD)/wrappers/dut_test.v
 basic:
 	rm -rf sim_build
 	$(MAKE) sim MODULE=dut_test TOPLEVEL=dut_test
-fifo:
+directed:
 	rm -rf sim_build
-	$(MAKE) sim MODULE=TC_1_FIFO TOPLEVEL=dut_test
+	$(MAKE) sim MODULE=directed TOPLEVEL=dut_test
+len0:
+	rm -rf sim_build
+	$(MAKE) sim MODULE=TC_2_LEN_DATA0 TOPLEVEL=dut_test
 random:
 	rm -rf sim_build
 	$(MAKE) sim MODULE=TC_5_PROTOCOL_VERIF TOPLEVEL=dut_test
