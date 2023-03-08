@@ -35,7 +35,7 @@ async def TC_1_FIFO(dut):
     dindrv=InputDriver(dut,'din',dut.CLK)
     ldrv=InputDriver(dut,'len',dut.CLK)
     outdrv=OutputDriver(dut,'dout',dut.CLK,sb_fn)
-    pause_mode=True
+    pause_mode=False
     cfgdrv=ConfigIODriver(dut,'cfg',dut.CLK,cfg_sb_fn)
 
     if(pause_mode):
@@ -52,12 +52,16 @@ async def TC_1_FIFO(dut):
     #wait for the FIFO to get full
     while True:
         await RisingEdge(dut.CLK)
-        await NextTimeStep()#wait for next time step to again sample the signal
+        await ReadOnly()#wait for next time step to again sample the signal
+        if(pause_mode):
+            signal=dut.busy
+        else:
+            signal=dut.normal_mode_RESET_N
         if prev_busy==1:
-            prev_busy=dut.busy
+            prev_busy=signal
             continue
-
-        if dut.busy==0 and dut.dout_ff_FULL_N==1:
+        print(signal==0 and dut.dout_ff_FULL_N==1)
+        if signal==0 and dut.dout_ff_FULL_N==1:
             prev_busy=1
             #generate data
             if(pause_mode):
@@ -74,6 +78,7 @@ async def TC_1_FIFO(dut):
                 # val=32
                 sum+=val
                 a.append(val)
+            print(a)
             expected_value.append(sum)
             
             for j in range(2):	
