@@ -35,8 +35,8 @@ class OutputDriver(BusDriver):
 		
 	async def _driver_send(self,value,sync=True):
 		while True:
-			for i in range(random.randint(0,20)):
-				await RisingEdge(self.clk)
+			# for i in range(random.randint(0,20)):
+			await RisingEdge(self.clk)
 			if self.bus.rdy.value !=1 :
 				await RisingEdge(self.bus.rdy)
 			if self.is_en:
