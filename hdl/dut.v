@@ -172,7 +172,7 @@ module dut(CLK,
   assign w_sw_override$whas = cfg_en && cfg_op && cfg_address == 8'd4 ;
 
   // register busy
-  assign busy$D_IN = !current_count_PLUS_1_EQ_programmed_length___d8 | programmed_length$EN;
+  assign busy$D_IN = (!current_count_PLUS_1_EQ_programmed_length___d8 | !pause) | programmed_length$EN;
   assign busy$EN = din_en | programmed_length$EN ;
 
   // register current_count
