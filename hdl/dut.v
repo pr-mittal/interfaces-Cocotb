@@ -138,14 +138,14 @@ module dut(CLK,
   wire current_count_PLUS_1_EQ_programmed_length___d8;
 
   // action method din
-  assign din_rdy = (busy || !pause) && dout_ff$FULL_N && programmed_length;
+  assign din_rdy = (busy || (!pause && programmed_length )) && dout_ff$FULL_N;
 
   // actionvalue method dout
   assign dout_value = dout_ff$D_OUT ;
   assign dout_rdy = dout_ff$EMPTY_N ;
 
   // action method len
-  assign len_rdy = !busy && !sw_override;
+  assign len_rdy = (!busy | !programmed_length) && !sw_override;
 
   // actionvalue method cfg
   assign cfg_data_out =
@@ -166,15 +166,14 @@ module dut(CLK,
 						 .EMPTY_N(dout_ff$EMPTY_N));
 
   // inputs to muxes for submodule ports
-  assign MUX_programmed_length$write_1__SEL_1 =
-	     len_en && !sw_override && !busy ;
+  assign MUX_programmed_length$write_1__SEL_1 = !sw_override ;
 
   // inlined wires
   assign w_sw_override$whas = cfg_en && cfg_op && cfg_address == 8'd4 ;
 
   // register busy
-  assign busy$D_IN = !current_count_PLUS_1_EQ_programmed_length___d8 && programmed_length;
-  assign busy$EN = din_en ;
+  assign busy$D_IN = !current_count_PLUS_1_EQ_programmed_length___d8 | programmed_length$EN;
+  assign busy$EN = din_en | programmed_length$EN ;
 
   // register current_count
   assign current_count$D_IN = next_count__h523 ;
@@ -191,8 +190,8 @@ module dut(CLK,
 	       len_value :
 	       cfg_data_in[7:0] ;
   assign programmed_length$EN =
-	     (len_en && !sw_override && !busy )||
-	     (cfg_en && cfg_op && cfg_address == 8'd8 && sw_override) ;
+	     ((len_en && !sw_override && !busy )||
+	     (cfg_en && cfg_op && cfg_address == 8'd8 && sw_override)) && programmed_length$D_IN ;
 
   // register sum
   assign sum$D_IN = sum + din_value ;
@@ -242,16 +241,9 @@ module dut(CLK,
     end
   else
     begin
-      if(programmed_length$EN && pause)
+      if((din_en && current_count_PLUS_1_EQ_programmed_length___d8 && !pause) | programmed_length$EN )
         begin
-          //wait for len_en
-          current_count <= `BSV_ASSIGNMENT_DELAY 8'd0;
-          sum <= `BSV_ASSIGNMENT_DELAY 8'd0;
-          programmed_length <= `BSV_ASSIGNMENT_DELAY programmed_length$D_IN;
-        end
-      else if(din_en && current_count_PLUS_1_EQ_programmed_length___d8 && !pause)
-        begin
-          //use the previously stored value
+          //use the previously stored value if not pause
           current_count <= `BSV_ASSIGNMENT_DELAY 8'd0;
           sum <= `BSV_ASSIGNMENT_DELAY 8'd0;
         end
@@ -259,8 +251,8 @@ module dut(CLK,
         begin
           if (current_count$EN) current_count <= `BSV_ASSIGNMENT_DELAY current_count$D_IN;
           if (sum$EN) sum <= `BSV_ASSIGNMENT_DELAY sum$D_IN;
-          if (programmed_length$EN) programmed_length <= `BSV_ASSIGNMENT_DELAY programmed_length$D_IN;
         end
+      if(programmed_length$EN) programmed_length <= `BSV_ASSIGNMENT_DELAY programmed_length$D_IN; 
       if (busy$EN) busy <= `BSV_ASSIGNMENT_DELAY busy$D_IN;
       if (pause$EN) pause <= `BSV_ASSIGNMENT_DELAY pause$D_IN;
       if (sw_override$EN) sw_override <= `BSV_ASSIGNMENT_DELAY sw_override$D_IN;

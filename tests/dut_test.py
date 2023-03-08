@@ -2,10 +2,13 @@ import cocotb
 from cocotb.clock import Clock
 from cocotb.triggers import Timer, RisingEdge, ReadOnly,NextTimeStep,FallingEdge
 import random
-from bin.driver import InputDriver,OutputDriver
+from bin.driver import InputDriver,OutputDriver,ConfigIODriver
 
 def sb_fn(actual_value):
 	global expected_value
+	assert actual_value==expected_value.pop(0),f"Scoreboard(SB) Matching Failed"
+def cfg_sb_fn(actual_value):
+	global cfg_expected_value
 	assert actual_value==expected_value.pop(0),f"Scoreboard(SB) Matching Failed"
 def get_max_value(Nbits):
 	#signed bit representation
@@ -33,12 +36,22 @@ async def dut_test(dut):
 	dindrv=InputDriver(dut,'din',dut.CLK)
 	ldrv=InputDriver(dut,'len',dut.CLK)
 	OutputDriver(dut,'dout',dut.CLK,sb_fn)
-	
-	# l=random.randint(0,10)
-	l=5
-	ldrv.append(l)
+	pause_mode=False
+	cfgdrv=ConfigIODriver(dut,'cfg',dut.CLK,cfg_sb_fn)
+
+	if(pause_mode):
+		cfgdrv.append([1,4,2])
+	else:
+		l=random.randint(0,10)
+		# l=5
+		ldrv.append(l)
+		
 	
 	for i in range(regressions):
+		if(pause_mode):
+			l=random.randint(0,10)
+			# l=5
+			ldrv.append(l)
 		if(l==0):continue
 		a=[]
 		sum=0
