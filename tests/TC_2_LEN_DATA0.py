@@ -9,6 +9,7 @@ from cocotb.clock import Clock
 from cocotb.triggers import Timer, RisingEdge, ReadOnly,NextTimeStep,FallingEdge
 import random
 from bin.driver import InputDriver,OutputDriver,ConfigIODriver
+from bin.sequencer import dutSequencer
 
 def sb_fn(actual_value):
 	global expected_value
@@ -37,25 +38,33 @@ async def dut_test(dut):
 	dindrv=InputDriver(dut,'din',dut.CLK)
 	ldrv=InputDriver(dut,'len',dut.CLK)
 	OutputDriver(dut,'dout',dut.CLK,sb_fn)
-	pause_mode=True #have to feed the value of length always
 	cfgdrv=ConfigIODriver(dut,'cfg',dut.CLK,cfg_sb_fn)
 
-	if(pause_mode):
-		cfgdrv.append([1,4,2])
-	else:
-		l=random.randint(0,10)
-		# l=5
-		ldrv.append(l)
+	pause_mode=True #have to feed the value of length always
+	sw_override=True
+	seq=dutSequencer()
+
+	# if(pause_mode):
+	# 	cfgdrv.append([1,4,2])
+	# else:
+	# 	l=random.randint(0,10)
+	# 	# l=5
+	# 	ldrv.append(l)
 	
 	for i in range(regressions):
-		if(pause_mode):
-			k=random.randint(0,1)
-			if(k):
-				l=0 #drive zero
-			else:
-				l=random.randint(0,10)
-			# l=5
-			ldrv.append(l)
+		# if(pause_mode):
+		# 	k=random.randint(0,1)
+		# 	if(k):
+		# 		l=0 #drive zero
+		# 	else:
+		# 		l=random.randint(0,10)
+		# 	# l=5
+		# 	ldrv.append(l)
+		k=random.randint(0,1)
+		if(k):
+			l=seq.length_sequencer(cfgdrv,ldrv,0,False,pause_mode,sw_override)
+		else:
+			l=seq.length_sequencer(cfgdrv,ldrv,0,True,pause_mode,sw_override)
 		if(l==0):continue
 		a=[]
 		sum=0
@@ -65,7 +74,7 @@ async def dut_test(dut):
 			val=0 #all data values are 0
 			sum+=val
 			a.append(val)
-		print(f'SUM={sum}')
+		print(f'Calculated SUM={sum}')
 		expected_value.append(sum)
 		
 		for j in range(2):	

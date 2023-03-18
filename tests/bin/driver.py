@@ -65,14 +65,18 @@ class ConfigIODriver(BusDriver):
 			await ReadOnly()
 			#current_count==programmed_length
 			val=self.bus.data_out.value
-			if(val>>16 == 0):#!busy
-				if(count==0):
-					#not yet busy
-					await RisingEdge(self.clk)
-					await NextTimeStep()
-					# await self.await_cycle_completion(0)
-				else:
-					return
+			# print(f'Busy Status {val} {val>>16 == 0 & ((val<<1)>>9)==((val<<9)>>9) | ((val<<1)>>9)==0}')
+			#val is 32 bit
+			if(val>>16 == 0 or ((val>>8 & 2**8-1))==0 ):#!busy
+				# print(f'Busy Status {val} {val & 2**8-1} {val>>8 & 2**8-1}')
+				# if(count==0):
+				# 	#not yet busy
+				# 	await RisingEdge(self.clk)
+				# 	await NextTimeStep()
+				# 	# await self.await_cycle_completion(0)
+				# else:
+				# 	return
+				return
 			else:
 				#it busy
 				await RisingEdge(self.clk)
@@ -88,7 +92,7 @@ class ConfigIODriver(BusDriver):
 		if transaction is not None:		
 			# for i in range(random.randint(0,20)):
 			[op,address,value]=transaction
-			# print(op,address,value)
+			print(f'Received Configuration Transaction {op},{address},{value}')
 			if op: #write
 				if address==8:
 					#wait for the process to be complete cycle
@@ -97,6 +101,8 @@ class ConfigIODriver(BusDriver):
 					await RisingEdge(self.clk)
 					await NextTimeStep()
 					await self.await_cycle_completion(0)
+					await RisingEdge(self.clk)
+					await NextTimeStep()
 				self.bus.op.value=1
 				self.bus.address.value=address
 				self.bus.data_in.value=value

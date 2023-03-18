@@ -5,6 +5,7 @@ class dutSequencer:
     prev_sw=False
     programmed_length=0
     def length_sequencer(self,cfgDrv,lDrv,len=0,is_random=False,pause=None,sw=None):
+        print(f'Generating Sequence')
         if pause==None: pause=self.prev_pause
         if sw==None:    sw=self.prev_sw
         if(pause!=self.prev_pause or sw!=self.prev_sw):
@@ -22,8 +23,10 @@ class dutSequencer:
             lDrv.append(len)
             cfgDrv.append(None)
         elif(not self.prev_pause and self.prev_sw):
-            self.programmed_length=len
-            cfgDrv.append([1,8,len])
+            #software override doesn't work if we are not pausing the operation first
+            # self.programmed_length=len
+            # cfgDrv.append([1,8,len])
+            cfgDrv.append(None)
         else:
             cfgDrv.append(None)
         return self.programmed_length
