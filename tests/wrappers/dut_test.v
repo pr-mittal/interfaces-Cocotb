@@ -84,4 +84,12 @@ initial begin
 	//	#5 CLK=~CLK;
 	//end
 end
+
+//asserions
+always @(posedge CLK) begin
+	if(len_en && din_en) $display("Assertion Failed : writing len and in data at the same time");
+end
+always @(posedge CLK) begin
+	if(dut.sum$EN && (dut.sum[7] && din_value[7] && !dut.sum$D_IN[7]) || (!dut.sum[7] && !din_value[7] && dut.sum$D_IN[7]) ) $display("Assertion Failed : Sum Overflow/Underflow");
+end
 endmodule

@@ -1,5 +1,5 @@
 $date
-	Wed Mar  8 13:28:13 2023
+	Sat Mar 18 14:48:28 2023
 $end
 $version
 	Icarus Verilog
@@ -32,46 +32,46 @@ $var wire 1 5 din_rdy $end
 $var wire 32 6 cfg_data_out [31:0] $end
 $scope module dut $end
 $var wire 1 ! CLK $end
+$var wire 1 7 \MUX_programmed_length$write_1__SEL_1 $end
 $var wire 1 " RST_N $end
-$var wire 1 7 \busy$D_IN $end
-$var wire 1 8 \busy$EN $end
-$var wire 8 9 cfg_address [7:0] $end
-$var wire 32 : cfg_data_in [31:0] $end
+$var wire 1 8 \busy$D_IN $end
+$var wire 1 9 \busy$EN $end
+$var wire 8 : cfg_address [7:0] $end
+$var wire 32 ; cfg_data_in [31:0] $end
 $var wire 1 ' cfg_en $end
 $var wire 1 ( cfg_op $end
 $var wire 1 ) cfg_rdy $end
-$var wire 8 ; \current_count$D_IN [7:0] $end
-$var wire 1 < \current_count$EN $end
+$var wire 8 < \current_count$D_IN [7:0] $end
+$var wire 1 = \current_count$EN $end
 $var wire 1 * din_en $end
 $var wire 1 5 din_rdy $end
-$var wire 8 = din_value [7:0] $end
+$var wire 8 > din_value [7:0] $end
 $var wire 1 , dout_en $end
-$var wire 1 > \dout_ff$CLR $end
-$var wire 1 ? \dout_ff$DEQ $end
-$var wire 1 @ \dout_ff$ENQ $end
+$var wire 1 ? \dout_ff$CLR $end
+$var wire 1 @ \dout_ff$DEQ $end
+$var wire 1 A \dout_ff$ENQ $end
 $var wire 1 4 dout_rdy $end
-$var wire 8 A dout_value [7:0] $end
+$var wire 8 B dout_value [7:0] $end
 $var wire 1 . len_en $end
 $var wire 1 2 len_rdy $end
-$var wire 8 B len_value [7:0] $end
-$var wire 1 C \pause$EN $end
-$var wire 1 D \programmed_length$EN $end
-$var wire 1 E \sum$EN $end
-$var wire 1 F \sw_override$EN $end
-$var wire 1 G \w_sw_override$whas $end
-$var wire 17 H x__h969 [16:0] $end
-$var wire 1 I \sw_override$D_IN $end
-$var wire 8 J \sum$D_IN [7:0] $end
-$var wire 8 K \programmed_length$D_IN [7:0] $end
-$var wire 1 L \pause$D_IN $end
-$var wire 8 M next_count__h523 [7:0] $end
-$var wire 1 N \dout_ff$FULL_N $end
-$var wire 1 O \dout_ff$EMPTY_N $end
-$var wire 8 P \dout_ff$D_OUT [7:0] $end
-$var wire 8 Q \dout_ff$D_IN [7:0] $end
-$var wire 1 R current_count_PLUS_1_EQ_programmed_length___d8 $end
-$var wire 32 S cfg_data_out [31:0] $end
-$var wire 1 T \MUX_programmed_length$write_1__SEL_1 $end
+$var wire 8 C len_value [7:0] $end
+$var wire 1 D \pause$EN $end
+$var wire 1 E \programmed_length$EN $end
+$var wire 1 F \sum$EN $end
+$var wire 1 G \sw_override$EN $end
+$var wire 1 H \w_sw_override$whas $end
+$var wire 17 I x__h969 [16:0] $end
+$var wire 1 J \sw_override$D_IN $end
+$var wire 8 K \sum$D_IN [7:0] $end
+$var wire 8 L \programmed_length$D_IN [7:0] $end
+$var wire 1 M \pause$D_IN $end
+$var wire 8 N next_count__h523 [7:0] $end
+$var wire 1 O \dout_ff$FULL_N $end
+$var wire 1 P \dout_ff$EMPTY_N $end
+$var wire 8 Q \dout_ff$D_OUT [7:0] $end
+$var wire 8 R \dout_ff$D_IN [7:0] $end
+$var wire 1 S current_count_PLUS_1_EQ_programmed_length___d8 $end
+$var wire 32 T cfg_data_out [31:0] $end
 $var reg 32 U CASE_cfg_address_0_0_CONCAT_x69_4_0_CONCAT_sw__ETC__q1 [31:0] $end
 $var reg 1 V busy $end
 $var reg 8 W current_count [7:0] $end
@@ -81,12 +81,12 @@ $var reg 8 Z sum [7:0] $end
 $var reg 1 [ sw_override $end
 $scope module dout_ff $end
 $var wire 1 ! CLK $end
-$var wire 1 > CLR $end
-$var wire 1 ? DEQ $end
+$var wire 1 ? CLR $end
+$var wire 1 @ DEQ $end
 $var wire 8 \ D_IN [7:0] $end
-$var wire 1 O EMPTY_N $end
-$var wire 1 @ ENQ $end
-$var wire 1 N FULL_N $end
+$var wire 1 P EMPTY_N $end
+$var wire 1 A ENQ $end
+$var wire 1 O FULL_N $end
 $var wire 1 " RST $end
 $var wire 1 ] d0d1 $end
 $var wire 1 ^ d0di $end
@@ -126,41 +126,41 @@ b10101010 Y
 b10101010 W
 0V
 b10101010 U
-1T
-b0x0x0x0x0 S
-0R
-bx Q
-b10101010 P
-0O
-1N
-b10101011 M
-zL
-bz K
-bx J
-zI
-b1010101010101010 H
+b0x0x0x0x0 T
+0S
+bx R
+b10101010 Q
+0P
+1O
+b10101011 N
+zM
+bz L
+bx K
+zJ
+b1010101010101010 I
+xH
 xG
 xF
 xE
 xD
-xC
-bz B
-b10101010 A
-0@
-z?
-0>
-bz =
-x<
-b10101011 ;
+bz C
+b10101010 B
+0A
+z@
+0?
+bz >
+x=
+b10101011 <
+bz ;
 bz :
-bz 9
-x8
-17
+x9
+18
+x7
 b0x0x0x0x0 6
 15
 04
 b10101010 3
-12
+02
 11
 z0
 bz /
@@ -182,27 +182,28 @@ $end
 #1000
 05
 b0 6
-b0 S
+b0 T
 b0 U
 b0 Z
 b0 Y
-b1 ;
-b1 M
-b0 H
+b1 <
+b1 N
+b0 I
 b0 W
 0"
 #2500
 0!
 #5000
-08
-0D
-0C
-0F
-0G
-0<
+09
 0E
+0D
+0G
+0H
+07
+0=
+0F
 0'
-0?
+0@
 0,
 0.
 0*
@@ -211,434 +212,463 @@ b0 W
 #7500
 0!
 #10000
-b0 K
-1L
-0I
-1C
-1F
+b10 L
+1M
+0J
+1D
 1G
-b0 /
-b0 B
-1.
+1H
 b10 &
-b10 :
+b10 ;
 b100 %
-b100 9
+b100 :
 1(
 1'
 1!
 #12500
 0!
 #15000
-0C
-0F
+19
+1E
+b110 L
+17
+0D
 0G
-0.
+0H
+b110 /
+b110 C
+1.
 0'
+12
 1X
 1!
 #17500
 0!
 #20000
-18
-1D
-b111 K
-b111 /
-b111 B
-1.
+b10000011000000000 6
+b10000011000000000 T
+1=
+1F
+b10000011000000000 U
+b10101 K
+b10101 R
+b10101 \
+b10101 +
+b10101 >
+1*
+b0 %
+b0 :
+0(
+1'
+0.
+19
+0E
+02
+b10 L
+15
+07
+1#
+1V
+b10000011000000000 I
+b110 Y
 1!
 #22500
 0!
 #25000
-1<
-1E
-b0 J
-b0 Q
-b0 \
-b0 +
-b0 =
-1*
-0.
-18
-0D
-15
-02
-1#
-1V
-b10000011100000000 H
-b111 Y
+09
+0=
+0F
+0*
+b10000011000000001 6
+b10000011000000001 T
+b10000011000000001 U
+b101010 K
+b101010 R
+b101010 \
+b10101 Z
+b10 <
+b10 N
+b10000011000000001 I
+b1 W
 1!
 #27500
 0!
 #30000
-08
-0<
-0E
-0*
-b10 ;
-b10 M
-b10000011100000001 H
-b1 W
+19
+1=
+1F
+b100100 K
+b100100 R
+b100100 \
+b1111 +
+b1111 >
+1*
 1!
 #32500
 0!
 #35000
-18
-1<
-1E
-1*
+09
+0=
+0F
+0*
+b10000011000000010 6
+b10000011000000010 T
+b10000011000000010 U
+b110011 K
+b110011 R
+b110011 \
+b100100 Z
+b11 <
+b11 N
+b10000011000000010 I
+b10 W
 1!
 #37500
 0!
 #40000
-08
-0<
-0E
-0*
-b11 ;
-b11 M
-b10000011100000010 H
-b10 W
+19
+1=
+1F
+b101110 K
+b101110 R
+b101110 \
+b1010 +
+b1010 >
+1*
 1!
 #42500
 0!
 #45000
-18
-1<
-1E
-1*
+09
+0=
+0F
+0*
+b10000011000000011 6
+b10000011000000011 T
+b10000011000000011 U
+b111000 K
+b111000 R
+b111000 \
+b101110 Z
+b100 <
+b100 N
+b10000011000000011 I
+b11 W
 1!
 #47500
 0!
 #50000
-08
-0<
-0E
-0*
-b100 ;
-b100 M
-b10000011100000011 H
-b11 W
+19
+1=
+1F
+b1000000 K
+b1000000 R
+b1000000 \
+b10010 +
+b10010 >
+1*
 1!
 #52500
 0!
 #55000
-18
-1<
-1E
-1*
+09
+0=
+0F
+0*
+b10000011000000100 6
+b10000011000000100 T
+b10000011000000100 U
+b1010010 K
+b1010010 R
+b1010010 \
+b1000000 Z
+b101 <
+b101 N
+b10000011000000100 I
+b100 W
 1!
 #57500
 0!
 #60000
-08
-0<
-0E
-0*
-b101 ;
-b101 M
-b10000011100000100 H
-b100 W
+19
+1=
+1F
+1*
 1!
 #62500
 0!
 #65000
-18
-1<
-1E
-1*
+09
+0*
+1_
+0^
+b10000011000000101 6
+b10000011000000101 T
+0F
+0=
+08
+0A
+b10000011000000101 U
+b1100100 K
+b1100100 R
+b1100100 \
+b1010010 Z
+1S
+b110 <
+b110 N
+b10000011000000101 I
+b101 W
 1!
 #67500
 0!
 #70000
-08
-0<
-0E
-0*
-b110 ;
-b110 M
-b10000011100000101 H
-b101 W
+0_
+1^
+19
+1A
+b1101101 K
+b1101101 R
+b1101101 \
+b11011 +
+b11011 >
+1*
 1!
 #72500
 0!
 #75000
+09
+0*
+12
+1_
+0^
+05
+b11000000000 6
+b11000000000 T
+0F
+0=
 18
-1<
-1E
-1*
+0A
+b11000000000 U
+b1101101 3
+b1101101 B
+b1101101 Q
+b1101101 a
+b1101101 b
+14
+1P
+1d
+0#
+0V
+b11011 K
+b11011 R
+b11011 \
+b0 Z
+0S
+b1 <
+b1 N
+b11000000000 I
+b0 W
 1!
 #77500
 0!
 #80000
-08
-0*
-1_
-0^
-07
-0E
-0<
-0@
-1R
-b111 ;
-b111 M
-b10000011100000110 H
-b110 W
+19
+1E
+b100 L
+17
+0'
+b100 /
+b100 C
+1.
 1!
 #82500
 0!
 #85000
-0_
-1^
-18
-1@
+1=
+1F
+b10011 K
+b10011 R
+b10011 \
+b10011 +
+b10011 >
 1*
+1'
+0.
+19
+02
+0E
+b10 L
+15
+b10000010000000000 6
+b10000010000000000 T
+07
+b10000010000000000 U
+1#
+1V
+b10000010000000000 I
+b100 Y
 1!
 #87500
 0!
 #90000
-17
-1D
-b1001 K
-18
-0@
-b1001 /
-b1001 B
-1.
-1?
-1,
+09
+0=
+0F
 0*
-1_
-0^
-12
-05
-0`
-14
-1O
-1d
-b0 3
-b0 A
-b0 P
-b0 a
-b0 b
-b11100000110 H
-0#
-0V
+b10000010000000001 6
+b10000010000000001 T
+b10000010000000001 U
+b100110 K
+b100110 R
+b100110 \
+b10011 Z
+b10 <
+b10 N
+b10000010000000001 I
+b1 W
 1!
 #92500
 0!
 #95000
-1<
-1E
+19
+1=
+1F
+b100000 K
+b100000 R
+b100000 \
+b1101 +
+b1101 >
 1*
-0.
-18
-0D
-02
-15
-04
-0O
-0d
-1#
-1V
-b1001 Y
-0R
-b1 ;
-b1 M
-b10000100100000000 H
-b0 W
 1!
-#97000
-0?
-0,
 #97500
 0!
 #100000
-08
-0<
-0E
+09
+0=
+0F
 0*
-b10 ;
-b10 M
-b10000100100000001 H
-b1 W
+b10000010000000010 6
+b10000010000000010 T
+b10000010000000010 U
+b101101 K
+b101101 R
+b101101 \
+b100000 Z
+b11 <
+b11 N
+b10000010000000010 I
+b10 W
 1!
 #102500
 0!
 #105000
-18
-1<
-1E
+19
+1=
+1F
+b110111 K
+b110111 R
+b110111 \
+b10111 +
+b10111 >
 1*
 1!
 #107500
 0!
 #110000
-08
-0<
-0E
+09
 0*
-b11 ;
-b11 M
-b10000100100000010 H
-b10 W
+0`
+b10000010000000011 6
+b10000010000000011 T
+0F
+0=
+08
+0A
+b10000010000000011 U
+b1001110 K
+b1001110 R
+b1001110 \
+b110111 Z
+1S
+b100 <
+b100 N
+b10000010000000011 I
+b11 W
 1!
 #112500
 0!
 #115000
-18
-1<
-1E
+1`
+19
+1A
+b1000110 K
+b1000110 R
+b1000110 \
+b1111 +
+b1111 >
 1*
 1!
 #117500
 0!
 #120000
-08
-0<
-0E
+09
 0*
-b100 ;
-b100 M
-b10000100100000011 H
-b11 W
+12
+0`
+b10000000000 6
+b10000000000 T
+05
+0F
+0=
+18
+0A
+b10000000000 U
+0-
+0O
+0e
+b1000110 c
+0#
+0V
+b1111 K
+b1111 R
+b1111 \
+b0 Z
+0S
+b1 <
+b1 N
+b10000000000 I
+b0 W
 1!
 #122500
 0!
 #125000
-18
-1<
-1E
-1*
+0_
+1]
+0'
+1@
+1,
 1!
 #127500
 0!
 #130000
-08
-0<
-0E
-0*
-b101 ;
-b101 M
-b10000100100000100 H
-b100 W
+1_
+0]
+1-
+1O
+1e
+b1000110 3
+b1000110 B
+b1000110 Q
+b1000110 a
+b1000110 b
 1!
+#132000
+0@
+0,
 #132500
 0!
 #135000
-18
-1<
-1E
-1*
-1!
-#137500
-0!
-#140000
-08
-0<
-0E
-0*
-b110 ;
-b110 M
-b10000100100000101 H
-b101 W
-1!
-#142500
-0!
-#145000
-18
-1<
-1E
-1*
-1!
-#147500
-0!
-#150000
-08
-0<
-0E
-0*
-b111 ;
-b111 M
-b10000100100000110 H
-b110 W
-1!
-#152500
-0!
-#155000
-18
-1<
-1E
-1*
-1!
-#157500
-0!
-#160000
-08
-0<
-0E
-0*
-b1000 ;
-b1000 M
-b10000100100000111 H
-b111 W
-1!
-#162500
-0!
-#165000
-18
-1<
-1E
-1*
-1!
-#167500
-0!
-#170000
-08
-0*
-1_
-0^
-07
-0E
-0<
-0@
-1R
-b1001 ;
-b1001 M
-b10000100100001000 H
-b1000 W
-1!
-#172500
-0!
-#175000
-0_
-1^
-18
 1@
-1*
-1!
-#177500
-0!
-#180000
-b0 K
-08
-0@
-b0 /
-b0 B
-1.
-1?
 1,
-0*
-1_
-0^
-12
-05
-0`
-14
-1O
-1d
-b100100001000 H
-0#
-0V
 1!
-#181001
+#136001
