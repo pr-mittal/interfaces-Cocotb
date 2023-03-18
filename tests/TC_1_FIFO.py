@@ -7,6 +7,7 @@ from cocotb.clock import Clock
 from cocotb.triggers import Timer, RisingEdge, ReadOnly,NextTimeStep,FallingEdge
 import random
 from bin.driver import InputDriver,OutputDriver,ConfigIODriver
+from bin.sequencer import dutSequencer
 
 def sb_fn(actual_value):
 	global expected_value
@@ -31,43 +32,48 @@ async def TC_1_FIFO(dut):
     await Timer(1,'ns')
     await RisingEdge(dut.CLK)
     dut.RST_N.value=1
+    is_reset=True
 
     dindrv=InputDriver(dut,'din',dut.CLK)
     ldrv=InputDriver(dut,'len',dut.CLK)
     outdrv=OutputDriver(dut,'dout',dut.CLK,sb_fn)
-    pause_mode=False
     cfgdrv=ConfigIODriver(dut,'cfg',dut.CLK,cfg_sb_fn)
-
-    if(pause_mode):
-        cfgdrv.append([1,4,2])
-    else:
-        l=random.randint(0,10)
-        # l=5
-        ldrv.append(l)
+    pause_mode=True
+    sw_override=False
+    seq=dutSequencer()
     
     #stop the output
     outdrv.reset_en()
 
-    prev_busy=0
+    # prev_busy=0
     #wait for the FIFO to get full
     while True:
-        await RisingEdge(dut.CLK)
-        await ReadOnly()#wait for next time step to again sample the signal
-        if(pause_mode):
-            signal=dut.busy
+        # await RisingEdge(dut.CLK)
+        # await ReadOnly()#wait for next time step to again sample the signal
+        # if(pause_mode):
+        #     signal=dut.busy
+        # else:
+        #     signal=dut.normal_mode_RESET_N
+
+        #continue only if there is a neg edge i.e. busy changes from 1-0
+        # if prev_busy==1 and dut.busy==0:
+        #     prev_busy=dut.busy
+        #     continue
+        # print(dut.busy==0 and dut.dout_ff_FULL_N==1)
+        if(is_reset):
+            is_reset=False
         else:
-            signal=dut.normal_mode_RESET_N
-        if prev_busy==1:
-            prev_busy=signal
-            continue
-        print(signal==0 and dut.dout_ff_FULL_N==1)
-        if signal==0 and dut.dout_ff_FULL_N==1:
-            prev_busy=1
+            if(seq.programmed_length):
+                await FallingEdge(dut.busy)
+                await ReadOnly()
+        print(dut.busy,dut.dout_ff_FULL_N)
+        if dut.dout_ff_FULL_N==1: 
             #generate data
-            if(pause_mode):
-                l=random.randint(0,10)
+            # if(pause_mode):
+                # l=random.randint(0,10)
                 # l=5
-                ldrv.append(l)
+                # ldrv.append(l)
+            l=seq.length_sequencer(cfgdrv,ldrv,0,True,pause_mode,sw_override)
             if(l==0):continue
 
             a=[]
@@ -78,7 +84,7 @@ async def TC_1_FIFO(dut):
                 # val=32
                 sum+=val
                 a.append(val)
-            print(a)
+            print(f'Generated Transaction {a}')
             expected_value.append(sum)
             
             for j in range(2):	
@@ -86,6 +92,8 @@ async def TC_1_FIFO(dut):
                     for k in range(len(a)):
                         dindrv.append(a[k])
                 # if(j==1): # register map
+            await RisingEdge(dut.busy)
+            await ReadOnly()
         elif dut.dout_ff_FULL_N==0:
             #fifo is full
             outdrv.set_en()

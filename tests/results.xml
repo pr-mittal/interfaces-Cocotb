@@ -1,6 +1,6 @@
 <testsuites name="results">
   <testsuite name="all" package="all">
-    <property name="random_seed" value="1678262293" />
-    <testcase name="dut_test" classname="TC_2_LEN_DATA0" file="/home/siliconmerc/Desktop/dyumnin/interfaces-SiliconMerc/tests/TC_2_LEN_DATA0.py" lineno="23" time="0.01211404800415039" sim_time_ns="181.001" ratio_time="14941.41346790002" />
+    <property name="random_seed" value="1679129849" />
+    <testcase name="TC_1_FIFO" classname="TC_1_FIFO" file="/home/siliconmerc/Desktop/dyumnin/interfaces-SiliconMerc/tests/TC_1_FIFO.py" lineno="22" time="0.012048006057739258" sim_time_ns="106.001" ratio_time="8798.21934783211" />
   </testsuite>
 </testsuites>
