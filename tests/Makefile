@@ -9,12 +9,15 @@ VERILOG_SOURCES += $(PWD)/wrappers/dut_test.v
 basic:
 	rm -rf sim_build
 	$(MAKE) sim MODULE=dut_test TOPLEVEL=dut_test
-regression:
+fifo:
 	rm -rf sim_build
 	$(MAKE) sim MODULE=TC_1_FIFO TOPLEVEL=dut_test
 len0:
 	rm -rf sim_build
 	$(MAKE) sim MODULE=TC_2_LEN_DATA0 TOPLEVEL=dut_test
+cfg:
+	rm -rf sim_build
+	$(MAKE) sim MODULE=TC_3_CONFIG_RW TOPLEVEL=dut_test
 datapath:
 	rm -rf sim_build
 	$(MAKE) sim MODULE=TC_4_DATAPATH_VERIF TOPLEVEL=dut_test
