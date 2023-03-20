@@ -16,14 +16,14 @@ class InputDriver(BusDriver):
 		await RisingEdge(self.clk)
 		if self.bus.rdy.value !=1 :
 			await RisingEdge(self.bus.rdy)
-			print(f'Rising Edge {self.name}')
+			# print(f'Rising Edge {self.name}')
 		self.bus.en.value =1
 		self.bus.value.value =value
 		await ReadOnly()
+		self.dutDrv._send(self.name,value)
 		await RisingEdge(self.clk)
 		self.bus.en.value =0
 		await NextTimeStep()#wait for next time step to again sample the signal
-		self.dutDrv._send(self.name,value)
 
 		
 class OutputDriver(BusDriver):
@@ -98,6 +98,7 @@ class ConfigIODriver(BusDriver):
 		if self.bus.rdy.value !=1 :
 			await RisingEdge(self.bus.rdy)
 		self.bus.en.value =1
+		self.dutDrv._send(self.name,transaction)
 		if transaction is not None:		
 			# for i in range(random.randint(0,20)):
 			[op,address,value]=transaction
@@ -121,13 +122,15 @@ class ConfigIODriver(BusDriver):
 				self.bus.address.value=address
 				self.bus.data_in.value=value
 			else: #read
-				self.op.value=0
+				self.bus.op.value=0
 				self.bus.address.value=address
 			await ReadOnly()
 			# ret_val=0
 			if not op:
 				# ret_val=self.bus.data_out.value
+				print(f'CFG received {self.bus.data_out.value}')
 				self.callback(self.bus.data_out.value)
+				# print(f'CFG received {self.bus.data_out.value}')
 		# else:
 		# 	#we have to just wait for the cycle to complete
 		# 	#wait for the process to be complete cycle
@@ -140,7 +143,6 @@ class ConfigIODriver(BusDriver):
 		await RisingEdge(self.clk)
 		self.bus.en.value =0
 		await NextTimeStep()#wait for next time step to again sample the signal
-		self.dutDrv._send(self.name,transaction)
 	
 class dutDriver:
 	# def append(self, transaction, callback=None, event=None, **kwargs)
@@ -159,6 +161,7 @@ class dutDriver:
 			sb_callback=self.sb[name]
 		else:
 			sb_callback=None
+		# print(sb_callback.name,id(sb_callback))
 		if(name=='din'):
 			self.din_sequence(transaction,sb_callback)
 		elif(name=='len'):
@@ -177,10 +180,12 @@ class dutDriver:
 			self.current_count=self.current_count+1
 	def len_sequence(self,transaction,sb_callback):
 		self.programmed_length=transaction
+		if(self.programmed_length!=0): self.busy=1
 	def dout_sequence(self,transation,sb_callback):
 		sb_callback.insert(transation)
 	def cfg_sequence(self,transaction,sb_callback):
 		[op,address,value]=transaction
+		print(f'dutDriver Received Configuration Transaction {op},{address},{value}')
 		if(op):
 			if(address==0):
 				print(f"Invalid packet on cfg bus - wriring to address 0 {transaction}")
@@ -193,6 +198,8 @@ class dutDriver:
 			if(address==0):
 				sb_callback.insert(self.busy<<16|self.programmed_length<<8|self.current_count)
 			elif(address==4):
+				print(f'Pause {self.pause<<1} SW {self.sw} and {self.pause<<1|self.sw}')
 				sb_callback.insert(self.pause<<1|self.sw)
 			elif(address==8):
+				print(f'Programmed Length {self.programmed_length}')
 				sb_callback.insert(self.programmed_length)

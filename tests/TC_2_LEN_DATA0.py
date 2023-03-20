@@ -38,8 +38,8 @@ async def dut_test(dut):
 	outDrv=OutputDriver(dut,'dout',dut.CLK,drv,outSB)
 	cfgdrv=ConfigIODriver(dut,'cfg',dut.CLK,drv,cfgSB)
 
-	pause_mode=True #have to feed the value of length always
-	sw_override=True
+	# pause_mode=True #have to feed the value of length always
+	# sw_override=True
 
 	seq=dutSequencer()
 	gen=PacketGenerator()
@@ -95,7 +95,7 @@ async def dut_test(dut):
 		# if(packet['cfg_op']):
 		print(packet)
 
-		while(len(dindrv._sendQ)!=0 or len(ldrv._sendQ)!=0  or len(cfgdrv._sendQ)!=0 or dut.len_en!=0 or dut.din_en!=0):
+		while(len(dindrv._sendQ)!=0 or len(ldrv._sendQ)!=0  or len(cfgdrv._sendQ)!=0 or dut.len_en!=0 or dut.din_en!=0 or dut.cfg_en!=0):
 		# while(drv.busy):
 			# await Timer(2,'ns')
 			await RisingEdge(dut.CLK)

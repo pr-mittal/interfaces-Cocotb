@@ -118,7 +118,7 @@ async def TC_1_FIFO(dut):
             # if(packet['cfg_op']):
             print(packet)
 
-            while(len(dindrv._sendQ)!=0 or len(ldrv._sendQ)!=0  or len(cfgdrv._sendQ)!=0 or dut.len_en!=0 or dut.din_en!=0):
+            while(len(dindrv._sendQ)!=0 or len(ldrv._sendQ)!=0  or len(cfgdrv._sendQ)!=0 or dut.len_en!=0 or dut.din_en!=0 or dut.cfg_en!=0):
             # while(drv.busy):
                 # await Timer(2,'ns')
                 await RisingEdge(dut.CLK)

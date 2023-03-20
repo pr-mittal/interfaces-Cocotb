@@ -216,7 +216,7 @@ module dut(CLK,
 	     next_count__h523 == programmed_length ;
   assign next_count__h523 = current_count + 8'd1 ;
   assign x__h969 = { busy, programmed_length, current_count } ;
-  always@(cfg_address or programmed_length or x__h969 or sw_override)
+  always@(cfg_address or programmed_length or x__h969 or sw_override or pause)
   begin
     case (cfg_address)
       8'd0:
@@ -224,7 +224,7 @@ module dut(CLK,
 	      { 15'd0, x__h969 };
       8'd4:
 	  CASE_cfg_address_0_0_CONCAT_x69_4_0_CONCAT_sw__ETC__q1 =
-	      { 31'd0, sw_override };
+	      { 30'd0,pause , sw_override };
       default: CASE_cfg_address_0_0_CONCAT_x69_4_0_CONCAT_sw__ETC__q1 =
 		   { 24'd0, programmed_length };
     endcase
