@@ -2,14 +2,11 @@ import cocotb
 from cocotb.clock import Clock
 from cocotb.triggers import Timer, RisingEdge, ReadOnly,NextTimeStep,FallingEdge
 import random
-from bin.driver import InputDriver,OutputDriver,ConfigIODriver
+from bin.driver import InputDriver,OutputDriver,ConfigIODriver,dutDriver
+from bin.sequencer import PacketGenerator,dutSequencer
+from bin.scoreboard import ScoreBoard
 
-def sb_fn(actual_value):
-	global expected_value
-	assert actual_value==expected_value.pop(0),f"Scoreboard(SB) Matching Failed"
-def cfg_sb_fn(actual_value):
-	global cfg_expected_value
-	assert actual_value==expected_value.pop(0),f"Scoreboard(SB) Matching Failed"
+
 def get_max_value(Nbits):
 	#signed bit representation
 	return  2**(Nbits - 1)-1
@@ -33,12 +30,15 @@ async def dut_test(dut):
 	await RisingEdge(dut.CLK)
 	dut.RST_N.value=1
 	
-	dindrv=InputDriver(dut,'din',dut.CLK)
-	ldrv=InputDriver(dut,'len',dut.CLK)
-	OutputDriver(dut,'dout',dut.CLK,sb_fn)
+	outSB=ScoreBoard('dout')
+	cfgSB=ScoreBoard('cfg')
+	drv=dutDriver({'cfg':cfgSB,'dout':outSB})
+	dindrv=InputDriver(dut,'din',dut.CLK,drv)
+	ldrv=InputDriver(dut,'len',dut.CLK,drv)
+	outDrv=OutputDriver(dut,'dout',dut.CLK,drv,outSB)
+	cfgdrv=ConfigIODriver(dut,'cfg',dut.CLK,drv,cfgSB)
 	pause_mode=False
-	cfgdrv=ConfigIODriver(dut,'cfg',dut.CLK,cfg_sb_fn)
-
+	
 	if(pause_mode):
 		cfgdrv.append([1,4,2])
 	else:
@@ -70,5 +70,7 @@ async def dut_test(dut):
 					dindrv.append(a[k])
 			# if(j==1): # register map
 	#wait for all calculations to complete
-	while len(expected_value)>0:
-		await Timer(2,'ns')
+	while (not (cfgSB.is_empty() and outSB.is_empty())):
+		await RisingEdge(dut.CLK)
+	# while len(expected_value)>0:
+	# 	await Timer(2,'ns')

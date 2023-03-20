@@ -8,7 +8,7 @@ VERILOG_SOURCES += $(PWD)/wrappers/dut_test.v
 # TOPLEVEL is the name of the toplevel module in your Verilog or VHDL file
 basic:
 	rm -rf sim_build
-	$(MAKE) sim MODULE=dut_test TOPLEVEL=dut_test
+	$(MAKE) sim MODULE=dut_sanity_test TOPLEVEL=dut_test
 fifo:
 	rm -rf sim_build
 	$(MAKE) sim MODULE=TC_1_FIFO TOPLEVEL=dut_test
