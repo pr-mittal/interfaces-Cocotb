@@ -1,8 +1,10 @@
 from cocotb.triggers import RisingEdge, ReadOnly,NextTimeStep,Timer
 from cocotb_bus.drivers import BusDriver
+import cocotb
 import random
 import os
-		
+from cocotb.triggers import Timer, RisingEdge, ReadOnly,NextTimeStep,FallingEdge
+
 class InputDriver(BusDriver):
 	_signals = ['rdy','en','value']
 	dutDrv=None
@@ -11,8 +13,14 @@ class InputDriver(BusDriver):
 		self.bus.en.value=0
 		self.clk=clk
 		self.dutDrv=drv
+		self.bus_rndm_delay=False
+		self.busy=0
+	def set_bus_delay(self):
+		self.bus_rndm_delay=True
+		
 	async def _driver_send(self,value,sync=True):
 		# for i in range(random.randint(0,20)):
+		self.busy=1
 		await RisingEdge(self.clk)
 		if self.bus.rdy.value !=1 :
 			await RisingEdge(self.bus.rdy)
@@ -24,11 +32,15 @@ class InputDriver(BusDriver):
 		await RisingEdge(self.clk)
 		self.bus.en.value =0
 		await NextTimeStep()#wait for next time step to again sample the signal
+		
+		if(self.bus_rndm_delay):
+			for i in range(random.randint(0,20)):
+				await RisingEdge(self.clk)
+		self.busy=0
 
 		
 class OutputDriver(BusDriver):
 	_signals = ['rdy','en','value']
-	is_en=1
 	dutDrv=None
 	def __init__(self,dut,name,clk,drv,sb_callback):
 		BusDriver.__init__(self,dut,name,clk)
@@ -37,6 +49,11 @@ class OutputDriver(BusDriver):
 		self.dutDrv=drv
 		self.callback=sb_callback #scoreboard callback
 		self.append(0)
+		self.bus_rndm_delay=False
+		self.is_en=0
+		
+	def set_bus_delay(self):
+		self.bus_rndm_delay=True
 		
 	async def _driver_send(self,value,sync=True):
 		while True:
@@ -52,6 +69,11 @@ class OutputDriver(BusDriver):
 				await RisingEdge(self.clk)
 				await NextTimeStep()
 				self.bus.en.value =0
+		
+				if(self.bus_rndm_delay):
+					for i in range(random.randint(0,20)):
+						await RisingEdge(self.clk)
+	
 	def set_en(self):
 		self.is_en=1
 	def reset_en(self):
@@ -68,6 +90,11 @@ class ConfigIODriver(BusDriver):
 		self.clk=clk
 		self.dutDrv=drv
 		self.callback=sb_callback #scoreboard callback
+		self.bus_rndm_delay=False
+		self.busy=0
+	def set_bus_delay(self):
+		self.bus_rndm_delay=True
+
 	# async def await_cycle_completion(self,count):
 	# 	while True:
 	# 		#start counting only after we are busy
@@ -94,6 +121,7 @@ class ConfigIODriver(BusDriver):
 	# 			count=count+1
 
 	async def _driver_send(self,transaction,sync=True):
+		self.busy=1
 		await RisingEdge(self.clk)
 		if self.bus.rdy.value !=1 :
 			await RisingEdge(self.bus.rdy)
@@ -143,17 +171,21 @@ class ConfigIODriver(BusDriver):
 		await RisingEdge(self.clk)
 		self.bus.en.value =0
 		await NextTimeStep()#wait for next time step to again sample the signal
-	
+		
+		if(self.bus_rndm_delay):
+			for i in range(random.randint(0,20)):
+				await RisingEdge(self.clk)
+		self.busy=0
+		
 class dutDriver:
 	# def append(self, transaction, callback=None, event=None, **kwargs)
 	#reset value of pause and sw bits
-	pause=False
-	sw=False
-	programmed_length=0
-	current_count=0
-	busy=0
-	sb={}
 	def __init__(self,sb=None):
+		self.pause=False
+		self.sw=False
+		self.programmed_length=0
+		self.current_count=0
+		self.busy=0
 		self.sb=sb
 	def _send(self,name,transaction):
 		# print(name,self.sb)

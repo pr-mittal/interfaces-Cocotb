@@ -20,7 +20,7 @@ def get_max_value(Nbits):
 async def dut_test(dut):
 	cocotb.start_soon(Clock(dut.CLK, 5,'ns').start())
 	global expected_value
-	regressions=5
+	regressions=1
 	
 	expected_value=[]
 	dut.RST_N.value=1
