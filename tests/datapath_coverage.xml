@@ -1,23 +1,78 @@
-<top abs_name="top" size="11" coverage="10" cover_percentage="90.91">
-  <sw size="2" coverage="2" cover_percentage="100.0" abs_name="top.sw" weight="1" at_least="1">
-    <bin0 bin="0" hits="4" abs_name="top.sw.bin0" />
-    <bin1 bin="1" hits="16" abs_name="top.sw.bin1" />
-  </sw>
-  <pause size="2" coverage="2" cover_percentage="100.0" abs_name="top.pause" weight="1" at_least="1">
-    <bin0 bin="0" hits="3" abs_name="top.pause.bin0" />
-    <bin1 bin="1" hits="17" abs_name="top.pause.bin1" />
-  </pause>
-  <cross size="4" coverage="3" cover_percentage="75.0" abs_name="top.cross">
-    <swp size="4" coverage="3" cover_percentage="75.0" abs_name="top.cross.swp" weight="1" at_least="1">
-      <bin0 bin="(0, 0)" hits="0" abs_name="top.cross.swp.bin0" />
-      <bin1 bin="(0, 1)" hits="4" abs_name="top.cross.swp.bin1" />
-      <bin2 bin="(1, 0)" hits="3" abs_name="top.cross.swp.bin2" />
-      <bin3 bin="(1, 1)" hits="13" abs_name="top.cross.swp.bin3" />
-    </swp>
+<top abs_name="top" size="42" coverage="20" cover_percentage="47.62">
+  <prot size="18" coverage="12" cover_percentage="66.67" abs_name="top.prot">
+    <len size="6" coverage="4" cover_percentage="66.67" abs_name="top.prot.len">
+      <current size="3" coverage="2" cover_percentage="66.67" abs_name="top.prot.len.current" weight="1" at_least="1">
+        <bin0 bin="Idle" hits="49" abs_name="top.prot.len.current.bin0" />
+        <bin1 bin="Rdy" hits="0" abs_name="top.prot.len.current.bin1" />
+        <bin2 bin="Txn" hits="2" abs_name="top.prot.len.current.bin2" />
+      </current>
+      <previous size="3" coverage="2" cover_percentage="66.67" abs_name="top.prot.len.previous" weight="1" at_least="1">
+        <bin0 bin="Idle" hits="49" abs_name="top.prot.len.previous.bin0" />
+        <bin1 bin="Rdy" hits="0" abs_name="top.prot.len.previous.bin1" />
+        <bin2 bin="Txn" hits="2" abs_name="top.prot.len.previous.bin2" />
+      </previous>
+    </len>
+    <din size="6" coverage="4" cover_percentage="66.67" abs_name="top.prot.din">
+      <current size="3" coverage="2" cover_percentage="66.67" abs_name="top.prot.din.current" weight="1" at_least="1">
+        <bin0 bin="Idle" hits="13" abs_name="top.prot.din.current.bin0" />
+        <bin1 bin="Rdy" hits="0" abs_name="top.prot.din.current.bin1" />
+        <bin2 bin="Txn" hits="22" abs_name="top.prot.din.current.bin2" />
+      </current>
+      <previous size="3" coverage="2" cover_percentage="66.67" abs_name="top.prot.din.previous" weight="1" at_least="1">
+        <bin0 bin="Idle" hits="13" abs_name="top.prot.din.previous.bin0" />
+        <bin1 bin="Rdy" hits="0" abs_name="top.prot.din.previous.bin1" />
+        <bin2 bin="Txn" hits="22" abs_name="top.prot.din.previous.bin2" />
+      </previous>
+    </din>
+    <dout size="6" coverage="4" cover_percentage="66.67" abs_name="top.prot.dout">
+      <current size="3" coverage="2" cover_percentage="66.67" abs_name="top.prot.dout.current" weight="1" at_least="1">
+        <bin0 bin="Idle" hits="49" abs_name="top.prot.dout.current.bin0" />
+        <bin1 bin="Rdy" hits="0" abs_name="top.prot.dout.current.bin1" />
+        <bin2 bin="Txn" hits="4" abs_name="top.prot.dout.current.bin2" />
+      </current>
+      <previous size="3" coverage="2" cover_percentage="66.67" abs_name="top.prot.dout.previous" weight="1" at_least="1">
+        <bin0 bin="Idle" hits="50" abs_name="top.prot.dout.previous.bin0" />
+        <bin1 bin="Rdy" hits="0" abs_name="top.prot.dout.previous.bin1" />
+        <bin2 bin="Txn" hits="3" abs_name="top.prot.dout.previous.bin2" />
+      </previous>
+    </dout>
+  </prot>
+  <cross size="24" coverage="8" cover_percentage="33.33" abs_name="top.cross">
+    <len_prot size="8" coverage="2" cover_percentage="25.0" abs_name="top.cross.len_prot">
+      <cross size="8" coverage="2" cover_percentage="25.0" abs_name="top.cross.len_prot.cross" weight="1" at_least="1">
+        <bin0 bin="('Idle', 'Idle')" hits="47" abs_name="top.cross.len_prot.cross.bin0" />
+        <bin1 bin="('Idle', 'Rdy')" hits="0" abs_name="top.cross.len_prot.cross.bin1" />
+        <bin2 bin="('Idle', 'Txn')" hits="0" abs_name="top.cross.len_prot.cross.bin2" />
+        <bin3 bin="('Rdy', 'Rdy')" hits="0" abs_name="top.cross.len_prot.cross.bin3" />
+        <bin4 bin="('Rdy', 'Txn')" hits="0" abs_name="top.cross.len_prot.cross.bin4" />
+        <bin5 bin="('Txn', 'Idle')" hits="2" abs_name="top.cross.len_prot.cross.bin5" />
+        <bin6 bin="('Txn', 'Rdy')" hits="0" abs_name="top.cross.len_prot.cross.bin6" />
+        <bin7 bin="('Txn', 'Txn')" hits="0" abs_name="top.cross.len_prot.cross.bin7" />
+      </cross>
+    </len_prot>
+    <din_prot size="8" coverage="3" cover_percentage="37.5" abs_name="top.cross.din_prot">
+      <cross size="8" coverage="3" cover_percentage="37.5" abs_name="top.cross.din_prot.cross" weight="1" at_least="1">
+        <bin0 bin="('Idle', 'Idle')" hits="9" abs_name="top.cross.din_prot.cross.bin0" />
+        <bin1 bin="('Idle', 'Rdy')" hits="0" abs_name="top.cross.din_prot.cross.bin1" />
+        <bin2 bin="('Idle', 'Txn')" hits="4" abs_name="top.cross.din_prot.cross.bin2" />
+        <bin3 bin="('Rdy', 'Rdy')" hits="0" abs_name="top.cross.din_prot.cross.bin3" />
+        <bin4 bin="('Rdy', 'Txn')" hits="0" abs_name="top.cross.din_prot.cross.bin4" />
+        <bin5 bin="('Txn', 'Idle')" hits="4" abs_name="top.cross.din_prot.cross.bin5" />
+        <bin6 bin="('Txn', 'Rdy')" hits="0" abs_name="top.cross.din_prot.cross.bin6" />
+        <bin7 bin="('Txn', 'Txn')" hits="0" abs_name="top.cross.din_prot.cross.bin7" />
+      </cross>
+    </din_prot>
+    <dout_prot size="8" coverage="3" cover_percentage="37.5" abs_name="top.cross.dout_prot">
+      <cross size="8" coverage="3" cover_percentage="37.5" abs_name="top.cross.dout_prot.cross" weight="1" at_least="1">
+        <bin0 bin="('Idle', 'Idle')" hits="46" abs_name="top.cross.dout_prot.cross.bin0" />
+        <bin1 bin="('Idle', 'Rdy')" hits="0" abs_name="top.cross.dout_prot.cross.bin1" />
+        <bin2 bin="('Idle', 'Txn')" hits="4" abs_name="top.cross.dout_prot.cross.bin2" />
+        <bin3 bin="('Rdy', 'Rdy')" hits="0" abs_name="top.cross.dout_prot.cross.bin3" />
+        <bin4 bin="('Rdy', 'Txn')" hits="0" abs_name="top.cross.dout_prot.cross.bin4" />
+        <bin5 bin="('Txn', 'Idle')" hits="3" abs_name="top.cross.dout_prot.cross.bin5" />
+        <bin6 bin="('Txn', 'Rdy')" hits="0" abs_name="top.cross.dout_prot.cross.bin6" />
+        <bin7 bin="('Txn', 'Txn')" hits="0" abs_name="top.cross.dout_prot.cross.bin7" />
+      </cross>
+    </dout_prot>
   </cross>
-  <cfg_r size="3" coverage="3" cover_percentage="100.0" abs_name="top.cfg_r" weight="1" at_least="1">
-    <bin0 bin="0" hits="18" abs_name="top.cfg_r.bin0" />
-    <bin1 bin="4" hits="20" abs_name="top.cfg_r.bin1" />
-    <bin2 bin="8" hits="19" abs_name="top.cfg_r.bin2" />
-  </cfg_r>
 </top>

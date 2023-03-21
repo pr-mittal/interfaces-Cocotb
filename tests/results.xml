@@ -1,6 +1,6 @@
 <testsuites name="results">
   <testsuite name="all" package="all">
-    <property name="random_seed" value="1679339667" />
-    <testcase name="dut_test" classname="TC_4_DATAPATH_VERIF" file="/home/siliconmerc/Desktop/dyumnin/interfaces-SiliconMerc/tests/TC_4_DATAPATH_VERIF.py" lineno="51" time="0.10588264465332031" sim_time_ns="1275.001" ratio_time="12041.642935672726" />
+    <property name="random_seed" value="1679383684" />
+    <testcase name="dut_test" classname="TC_5_PROTOCOL_VERIF" file="/home/siliconmerc/Desktop/dyumnin/interfaces-SiliconMerc/tests/TC_5_PROTOCOL_VERIF.py" lineno="89" time="0.05331301689147949" sim_time_ns="270.001" ratio_time="5064.4479667994865" />
   </testsuite>
 </testsuites>

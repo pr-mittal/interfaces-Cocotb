@@ -21,7 +21,7 @@ cfg:
 datapath:
 	rm -rf sim_build
 	$(MAKE) sim MODULE=TC_4_DATAPATH_VERIF TOPLEVEL=dut_test
-random:
+protocol:
 	rm -rf sim_build
 	$(MAKE) sim MODULE=TC_5_PROTOCOL_VERIF TOPLEVEL=dut_test
 include $(shell cocotb-config --makefiles)/Makefile.sim
