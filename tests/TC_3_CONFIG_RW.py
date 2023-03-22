@@ -15,12 +15,31 @@ from bin.scoreboard import ScoreBoard
 def get_max_value(Nbits):
 	#signed bit representation
 	return  2**(Nbits - 1)-1
+async def is_driver_empty(ifcDrv,dut):
+	i=0
+	while(True):
+		while(i<len(ifcDrv)):
+			if (len(ifcDrv[i]._sendQ)!=0 or ifcDrv[i].busy==1):
+				await RisingEdge(dut.CLK)
+				await ReadOnly()
+				i=0
+			else:
+				i+=1
+		break
 
 @cocotb.test()
 async def dut_test(dut):
 	cocotb.start_soon(Clock(dut.CLK, 5,'ns').start())
 	global expected_value
-	regressions=5
+	regressions=100
+	
+	outSB=ScoreBoard('dout')
+	cfgSB=ScoreBoard('cfg')
+	drv=dutDriver({'cfg':cfgSB,'dout':outSB})
+	dindrv=InputDriver(dut,'din',dut.CLK,drv)
+	ldrv=InputDriver(dut,'len',dut.CLK,drv)
+	outDrv=OutputDriver(dut,'dout',dut.CLK,drv,outSB)
+	cfgdrv=ConfigIODriver(dut,'cfg',dut.CLK,drv,cfgSB)
 	
 	expected_value=[]
 	dut.RST_N.value=1
@@ -29,15 +48,6 @@ async def dut_test(dut):
 	await Timer(1,'ns')
 	await RisingEdge(dut.CLK)
 	dut.RST_N.value=1
-	
-	outSB=ScoreBoard('dout')
-	cfgSB=ScoreBoard('cfg')
-	# print(id(outSB),id(cfgSB))
-	drv=dutDriver({'cfg':cfgSB,'dout':outSB})
-	dindrv=InputDriver(dut,'din',dut.CLK,drv)
-	ldrv=InputDriver(dut,'len',dut.CLK,drv)
-	outDrv=OutputDriver(dut,'dout',dut.CLK,drv,outSB)
-	cfgdrv=ConfigIODriver(dut,'cfg',dut.CLK,drv,cfgSB)
 
 	# pause_mode=True #have to feed the value of length always
 	# sw_override=True
@@ -62,12 +72,29 @@ async def dut_test(dut):
 		# if(l==0):continue
 		if(l!=packet['len_value']):
 			packet['din_value']=gen.array_w_sum(packet['din_sum'],l)
+			packet['len_value']=l
+		print(packet)
+		
+		await is_driver_empty([dindrv,ldrv,cfgdrv],dut)
+		
 		for val in packet['din_value']:
 			dindrv.append(val)
 		if l!=0:
 			print(f'Calculated SUM={packet["din_sum"]} length {l}')
 			drv._send('dout',packet['din_sum'])
 		
+			while(drv.busy==0 and drv.programmed_length!=1):
+				await RisingEdge(dut.CLK)
+				await ReadOnly()
+		
+		
+		# while(len(dindrv._sendQ)!=0 or len(ldrv._sendQ)!=0  or len(cfgdrv._sendQ)!=0 or dut.len_en!=0 or dut.din_en!=0 or dut.cfg_en!=0 or dindrv.busy==1 or ldrv.busy==1 or cfgdrv.busy==1):
+		# # while(not drv.busy):
+		# 	# await Timer(2,'ns')
+		# 	await RisingEdge(dut.CLK)
+		# 	await ReadOnly()
+
+			
 		# k=random.randint(0,1)
 		# if(k):
 		# 	l=seq.length_sequencer(cfgdrv,ldrv,0,False,pause_mode,sw_override)
@@ -94,24 +121,32 @@ async def dut_test(dut):
 
 		packet=gen.get()
 		seq.cfg_address_4(cfgdrv,packet)
-
+		# print(f"TEMP next packet {packet}")
 		# for j in range(random.randint(0,l)):
 		# 	seq.cfg_r(cfgdrv,gen.get_cfg_r())
 
 		# if(packet['cfg_op']):
-		print(packet)
 
-		while(len(dindrv._sendQ)!=0 or len(ldrv._sendQ)!=0  or len(cfgdrv._sendQ)!=0 or dut.len_en!=0 or dut.din_en!=0 or dut.cfg_en!=0):
-		# while(drv.busy):
+		while(len(dindrv._sendQ)!=0 or len(ldrv._sendQ)!=0  or len(cfgdrv._sendQ)!=0 or dut.len_en!=0 or dut.din_en!=0 or dut.cfg_en!=0 or dindrv.busy==1 or ldrv.busy==1 or cfgdrv.busy==1):
+		# while(not drv.busy):
 			# await Timer(2,'ns')
 			if random.randint(0,1) and len(cfgdrv._sendQ)==0 and dut.cfg_en==0 and drv.current_count<drv.programmed_length-1 : seq.cfg_r(cfgdrv,gen.get_cfg_r())
 			await RisingEdge(dut.CLK)
 			await ReadOnly()
+
 	#wait for all calculations to complete
 	# while len(expected_value)>0:
 	# 	await Timer(2,'ns')
+	# await is_driver_empty([dindrv,ldrv,cfgdrv],dut)
 	print("WAITING FOR OUTPUT")
+	# count=0
+	# print(not (cfgSB.is_empty() and outSB.is_empty()))
+
 	while (not (cfgSB.is_empty() and outSB.is_empty())):
-		# await RisingEdge(dut.CLK)
-		# await ReadOnly()
-		await Timer(2,'ns')
+	# 	print(count)
+	# 	count+=1
+	# 	print(not (cfgSB.is_empty() and outSB.is_empty()))
+		await RisingEdge(dut.CLK)
+		await ReadOnly()
+	# 	# await Timer(2,'ns')
+	await Timer(1, units='ns')

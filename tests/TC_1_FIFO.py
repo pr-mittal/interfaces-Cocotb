@@ -19,15 +19,7 @@ async def TC_1_FIFO(dut):
     cocotb.start_soon(Clock(dut.CLK, 5,'ns').start())
     global expected_value
     regressions=100
-    
-    expected_value=[]
-    dut.RST_N.value=1
-    await Timer(1,'ns')
-    dut.RST_N.value=0
-    await Timer(1,'ns')
-    await RisingEdge(dut.CLK)
-    dut.RST_N.value=1
-    # is_reset=True
+
 
     outSB=ScoreBoard('dout')
     cfgSB=ScoreBoard('cfg')
@@ -36,6 +28,14 @@ async def TC_1_FIFO(dut):
     ldrv=InputDriver(dut,'len',dut.CLK,drv)
     outDrv=OutputDriver(dut,'dout',dut.CLK,drv,outSB)
     cfgdrv=ConfigIODriver(dut,'cfg',dut.CLK,drv,cfgSB)
+
+    dut.RST_N.value=1
+    await Timer(1,'ns')
+    dut.RST_N.value=0
+    await Timer(1,'ns')
+    await RisingEdge(dut.CLK)
+    dut.RST_N.value=1
+    # is_reset=True
 
     seq=dutSequencer()
     gen=PacketGenerator()
@@ -146,3 +146,5 @@ async def TC_1_FIFO(dut):
         while (not (cfgSB.is_empty() and outSB.is_empty())):
             await RisingEdge(dut.CLK)
             # await Timer(2,'ns')
+        await Timer(1, units='ns')
+

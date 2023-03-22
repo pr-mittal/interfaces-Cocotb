@@ -261,8 +261,9 @@ module dut(CLK,
     end
   else
     begin
-      if((din_en && current_count_PLUS_1_EQ_programmed_length___d8 && !pause) | (pause && programmed_length$EN ))
+      // if((din_en && current_count_PLUS_1_EQ_programmed_length___d8 && !pause) | (pause && programmed_length$EN ))
       // if(din_en && current_count_PLUS_1_EQ_programmed_length___d8)
+      if((!busy && !pause && current_count_PLUS_1_EQ_programmed_length___d8) | (pause && programmed_length$EN ))  
         begin
           // //use the previously stored value if not pause
           // if(programmed_length$EN && (proprogrammed_length$D_IN == 8'd1))
@@ -270,6 +271,7 @@ module dut(CLK,
           // else  
           //   current_count <= `BSV_ASSIGNMENT_DELAY 8'd0;
           current_count <= `BSV_ASSIGNMENT_DELAY 8'd0;
+          // current_count <= `BSV_ASSIGNMENT_DELAY !(pause && programmed_length$EN);
           sum <= `BSV_ASSIGNMENT_DELAY 8'd0;
         end
       else 
