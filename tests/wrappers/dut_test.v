@@ -20,9 +20,9 @@ module dut_test(CLK,
 	   cfg_data_out,
 	   cfg_rdy,
 	   
-	   busy_D_IN,
+	//    busy_D_IN,
 	   dout_ff_FULL_N,
-	   programmed_length_EN
+	//    programmed_length_EN
 	   );
   input CLK;
   input  RST_N;
@@ -50,9 +50,9 @@ module dut_test(CLK,
   output [31 : 0] cfg_data_out;
   output cfg_rdy;
 
-  output busy_D_IN;
+//   output busy_D_IN;
   output dout_ff_FULL_N;
-  output programmed_length_EN;
+//   output programmed_length_EN;
 
 dut dut(
 	.CLK(CLK),
@@ -73,9 +73,9 @@ dut dut(
 	.cfg_data_out(cfg_data_out),
 	.cfg_rdy(cfg_rdy)
 );
-  assign busy=dut.busy;
+//   assign busy=dut.busy;
   assign dout_ff_FULL_N=dut.dout_ff$FULL_N;
-  assign normal_mode_RESET_N=!(dut.current_count==0 && dut.busy && !dut.pause);
+//   assign normal_mode_RESET_N=!(dut.current_count==0 && dut.busy && !dut.pause);
 initial begin
 	$dumpfile("waves.vcd");
 	$dumpvars;

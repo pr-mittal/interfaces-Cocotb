@@ -18,7 +18,7 @@ def get_max_value(Nbits):
 async def TC_1_FIFO(dut):
     cocotb.start_soon(Clock(dut.CLK, 5,'ns').start())
     global expected_value
-    regressions=50
+    regressions=100
     
     expected_value=[]
     dut.RST_N.value=1

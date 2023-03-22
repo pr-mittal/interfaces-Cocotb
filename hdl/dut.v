@@ -102,7 +102,7 @@ module dut(CLK,
   wire busy$D_IN, busy$EN;
 
   //register start_din
-  // reg start_din;
+  reg start_din;
 
   // register current_count
   reg [7 : 0] current_count;
@@ -142,16 +142,16 @@ module dut(CLK,
 
   // action method din
   // assign din_rdy = busy && dout_ff$FULL_N && programmed_length;
-  // assign din_rdy = (!current_count_PLUS_1_EQ_programmed_length___d8 | busy | start_din) && dout_ff$FULL_N && programmed_length;
-  assign din_rdy = (!current_count_PLUS_1_EQ_programmed_length___d8 | busy ) && dout_ff$FULL_N && programmed_length;
+  assign din_rdy = (!current_count_PLUS_1_EQ_programmed_length___d8 | busy | start_din) && dout_ff$FULL_N && programmed_length;
+  // assign din_rdy = (!current_count_PLUS_1_EQ_programmed_length___d8 | busy ) && dout_ff$FULL_N && programmed_length;
 
   // actionvalue method dout
   assign dout_value = dout_ff$D_OUT ;
   assign dout_rdy = dout_ff$EMPTY_N ;
 
   // action method len
-  // assign len_rdy = ((!busy && !start_din) | !programmed_length) && !sw_override && pause ;
-  assign len_rdy = (!busy | !programmed_length) && !sw_override && pause ;
+  assign len_rdy = ((!busy && !start_din) | !programmed_length) && !sw_override && pause ;
+  // assign len_rdy = (!busy | !programmed_length) && !sw_override && pause ;
 
   // actionvalue method cfg
   assign cfg_data_out =
@@ -234,7 +234,20 @@ module dut(CLK,
 		   { 24'd0, programmed_length };
     endcase
   end
-
+  always@(posedge CLK or `BSV_RESET_EDGE RST_N)
+  if (RST_N == `BSV_RESET_VALUE)
+    begin
+      start_din <= `BSV_ASSIGNMENT_DELAY 1'd0;
+    end
+  else
+    begin
+      if (din_en) start_din <= `BSV_ASSIGNMENT_DELAY 1'd0;
+      else if((!busy && !pause) | (pause && programmed_length$EN ))
+      // if(din_en && current_count_PLUS_1_EQ_programmed_length___d8)
+        begin
+          start_din <= `BSV_ASSIGNMENT_DELAY 1'd1;
+        end
+    end
   // handling of inlined registers
   always@(posedge CLK or `BSV_RESET_EDGE RST_N)
   if (RST_N == `BSV_RESET_VALUE)
@@ -245,7 +258,6 @@ module dut(CLK,
       programmed_length <= `BSV_ASSIGNMENT_DELAY 8'd0;
       sum <= `BSV_ASSIGNMENT_DELAY 8'd0;
       sw_override <= `BSV_ASSIGNMENT_DELAY 1'd0;
-      // start_din <= `BSV_ASSIGNMENT_DELAY 1'd0;
     end
   else
     begin
@@ -259,13 +271,12 @@ module dut(CLK,
           //   current_count <= `BSV_ASSIGNMENT_DELAY 8'd0;
           current_count <= `BSV_ASSIGNMENT_DELAY 8'd0;
           sum <= `BSV_ASSIGNMENT_DELAY 8'd0;
-          // start_din <= `BSV_ASSIGNMENT_DELAY 1'd1;
         end
       else 
         begin
           if (current_count$EN) current_count <= `BSV_ASSIGNMENT_DELAY current_count$D_IN;
           if (sum$EN) sum <= `BSV_ASSIGNMENT_DELAY sum$D_IN;
-          // if (din_en) start_din <= `BSV_ASSIGNMENT_DELAY 1'd0;
+          if (din_en) start_din <= `BSV_ASSIGNMENT_DELAY 1'd0;
         end
       if(programmed_length$EN) programmed_length <= `BSV_ASSIGNMENT_DELAY programmed_length$D_IN; 
       if (busy$EN) busy <= `BSV_ASSIGNMENT_DELAY busy$D_IN;
