@@ -30,7 +30,6 @@ async def is_driver_empty(ifcDrv,dut):
 @cocotb.test()
 async def dut_test(dut):
 	cocotb.start_soon(Clock(dut.CLK, 5,'ns').start())
-	global expected_value
 	regressions=100
 	
 	outSB=ScoreBoard('dout')

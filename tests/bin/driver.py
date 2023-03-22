@@ -19,8 +19,10 @@ class InputDriver(BusDriver):
 		self.bus_rndm_delay=True
 		
 	async def _driver_send(self,value,sync=True):
-		# for i in range(random.randint(0,20)):
 		self.busy=1
+		# if(self.bus_rndm_delay):
+		# 	for i in range(random.randint(0,20)):
+		# 		await RisingEdge(self.clk)
 		await RisingEdge(self.clk)
 		if self.bus.rdy.value !=1 :
 			await RisingEdge(self.bus.rdy)
@@ -32,10 +34,6 @@ class InputDriver(BusDriver):
 		self.bus.en.value =0
 		self.dutDrv._send(self.name,value)
 		await NextTimeStep()#wait for next time step to again sample the signal
-		
-		if(self.bus_rndm_delay):
-			for i in range(random.randint(0,20)):
-				await RisingEdge(self.clk)
 		self.busy=0
 
 		
@@ -57,7 +55,9 @@ class OutputDriver(BusDriver):
 		
 	async def _driver_send(self,value,sync=True):
 		while True:
-			# for i in range(random.randint(0,20)):
+			# if(self.bus_rndm_delay):
+			# 	for i in range(random.randint(0,20)):
+			# 		await RisingEdge(self.clk)
 			await RisingEdge(self.clk)
 			if self.bus.rdy.value !=1 :
 				await RisingEdge(self.bus.rdy)
@@ -69,10 +69,6 @@ class OutputDriver(BusDriver):
 				await RisingEdge(self.clk)
 				await NextTimeStep()
 				self.bus.en.value =0
-		
-				if(self.bus_rndm_delay):
-					for i in range(random.randint(0,20)):
-						await RisingEdge(self.clk)
 	
 	def set_en(self):
 		self.is_en=1
@@ -122,6 +118,9 @@ class ConfigIODriver(BusDriver):
 
 	async def _driver_send(self,transaction,sync=True):
 		self.busy=1
+		# if(self.bus_rndm_delay):
+		# 	for i in range(random.randint(0,20)):
+		# 		await RisingEdge(self.clk)
 		await RisingEdge(self.clk)
 		if self.bus.rdy.value !=1 :
 			await RisingEdge(self.bus.rdy)
@@ -173,10 +172,6 @@ class ConfigIODriver(BusDriver):
 		if(op):
 			self.dutDrv._send(self.name,transaction)
 		await NextTimeStep()#wait for next time step to again sample the signal
-		
-		if(self.bus_rndm_delay):
-			for i in range(random.randint(0,20)):
-				await RisingEdge(self.clk)
 		self.busy=0
 		
 class dutDriver:

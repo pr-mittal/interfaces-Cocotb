@@ -85,42 +85,44 @@ def din_prot_cover(txn):
 		)
 def dout_prot_cover(txn):
 	pass
-
+async def is_driver_empty(ifcDrv,dut):
+	i=0
+	while(True):
+		# print("Await Driver Send")
+		while(i<len(ifcDrv)):
+			if (len(ifcDrv[i]._sendQ)!=0 or ifcDrv[i].busy==1):
+				await RisingEdge(dut.CLK)
+				await ReadOnly()
+				i=0
+			else:
+				i+=1
+		break
 @cocotb.test()
 async def dut_test(dut):
 	cocotb.start_soon(Clock(dut.CLK, 5,'ns').start())
-	global expected_value
-	regressions=5
-	
-	expected_value=[]
-	dut.RST_N.value=1
-	await Timer(1,'ns')
-	dut.RST_N.value=0
-	await Timer(1,'ns')
-	await RisingEdge(dut.CLK)
-	dut.RST_N.value=1
+	regressions=100
 	
 	outSB=ScoreBoard('dout')
 	cfgSB=ScoreBoard('cfg')
 	drv=dutDriver({'cfg':cfgSB,'dout':outSB})
 	dindrv=InputDriver(dut,'din',dut.CLK,drv)
-	# dindrv.set_bus_delay()
+	dindrv.set_bus_delay()
 	ldrv=InputDriver(dut,'len',dut.CLK,drv)
-	# ldrv.set_bus_delay()
+	ldrv.set_bus_delay()
 	outDrv=OutputDriver(dut,'dout',dut.CLK,drv,outSB)
-	# outDrv.set_bus_delay()
+	outDrv.set_bus_delay()
 	cfgdrv=ConfigIODriver(dut,'cfg',dut.CLK,drv,cfgSB)
 	# cfgdrv.set_bus_delay()
 	IOMonitor(dut,'len',dut.CLK,callback=len_prot_cover)
 	IOMonitor(dut,'din',dut.CLK,callback=din_prot_cover)
 	IOMonitor(dut,'dout',dut.CLK,callback=dout_prot_cover)
 
-	#in function
-	
-	#in input and output driver
-	# for i in range(random.randint(0,20)):
-	# 	await RisingEdge(self.clk)
-
+	dut.RST_N.value=1
+	await Timer(1,'ns')
+	dut.RST_N.value=0
+	await Timer(1,'ns')
+	await RisingEdge(dut.CLK)
+	dut.RST_N.value=1
 
 	# pause_mode=True #have to feed the value of length always
 	# sw_override=True
@@ -145,11 +147,17 @@ async def dut_test(dut):
 		# if(l==0):continue
 		if(l!=packet['len_value']):
 			packet['din_value']=gen.array_w_sum(packet['din_sum'],l)
+			packet['len_value']=l
+		print(packet)
+		await is_driver_empty([dindrv,ldrv,cfgdrv],dut)
 		for val in packet['din_value']:
 			dindrv.append(val)
 		if l!=0:
 			print(f'Calculated SUM={packet["din_sum"]} length {l}')
 			drv._send('dout',packet['din_sum'])
+			while(drv.busy==0 and drv.programmed_length!=1):
+				await RisingEdge(dut.CLK)
+				await ReadOnly()
 		# k=random.randint(0,1)
 		# if(k):
 		# 	l=seq.length_sequencer(cfgdrv,ldrv,0,False,pause_mode,sw_override)
@@ -175,8 +183,6 @@ async def dut_test(dut):
 		packet=gen.get()
 		seq.cfg_address_4(cfgdrv,packet)
 		# if(packet['cfg_op']):
-		print(packet)
-
 		while(len(dindrv._sendQ)!=0 or len(ldrv._sendQ)!=0  or len(cfgdrv._sendQ)!=0 or dut.len_en!=0 or dut.din_en!=0 or dut.cfg_en!=0):
 		# while(drv.busy):
 			# await Timer(2,'ns')
@@ -193,7 +199,9 @@ async def dut_test(dut):
 	print("WAITING FOR OUTPUT")
 	while (not (cfgSB.is_empty() and outSB.is_empty())):
 		await RisingEdge(dut.CLK)
+		await ReadOnly()
 		# await Timer(2,'ns')
+	await Timer(1, units='ns')
 
 	coverage_db.report_coverage(cocotb.log.info,bins=True)
 	coverage_file=os.path.join(os.getenv("RESULT_PATH","./"),'datapath_coverage.xml')
