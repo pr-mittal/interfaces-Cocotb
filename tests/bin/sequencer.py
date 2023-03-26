@@ -10,6 +10,7 @@ class dutSequencer:
     def cfg_r(self,cfgDrv,packet):
         address=packet['cfg_address']
         cfgDrv.append([0,address,0])
+        # print("Read")
             
     def cfg_address_4(self,cfgDrv,packet):
         pause=packet['pause_mode']

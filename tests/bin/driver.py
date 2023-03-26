@@ -20,20 +20,21 @@ class InputDriver(BusDriver):
 		
 	async def _driver_send(self,value,sync=True):
 		self.busy=1
-		# if(self.bus_rndm_delay):
-		# 	for i in range(random.randint(0,20)):
-		# 		await RisingEdge(self.clk)
-		await RisingEdge(self.clk)
+		# print(f"Received {self.name} {value} {self.bus.rdy.value}")
+		if(self.bus_rndm_delay):
+			for i in range(random.randint(0,20)):
+				await RisingEdge(self.clk)
 		if self.bus.rdy.value !=1 :
+			# print("NOT READY")
 			await RisingEdge(self.bus.rdy)
 			# print(f'Rising Edge {self.name}')
 		self.bus.en.value =1
 		self.bus.value.value =value
 		await ReadOnly()
 		await RisingEdge(self.clk)
+		await NextTimeStep()#wait for next time step to again sample the signal
 		self.bus.en.value =0
 		self.dutDrv._send(self.name,value)
-		await NextTimeStep()#wait for next time step to again sample the signal
 		self.busy=0
 
 		
@@ -54,22 +55,25 @@ class OutputDriver(BusDriver):
 		self.bus_rndm_delay=True
 		
 	async def _driver_send(self,value,sync=True):
-		while True:
-			# if(self.bus_rndm_delay):
-			# 	for i in range(random.randint(0,20)):
-			# 		await RisingEdge(self.clk)
-			await RisingEdge(self.clk)
-			if self.bus.rdy.value !=1 :
-				await RisingEdge(self.bus.rdy)
-			if self.is_en:
-				self.bus.en.value =1
-				#self.bus.data.value =value
-				await ReadOnly()
-				self.callback(self.bus.value.value)
-				await RisingEdge(self.clk)
-				await NextTimeStep()
-				self.bus.en.value =0
-	
+			while True:
+				if self.is_en:
+					# print(f"ENABLED {self.bus.rdy.value}")
+					if(self.bus_rndm_delay):
+						for i in range(random.randint(0,20)):
+							await RisingEdge(self.clk)
+					if self.bus.rdy.value !=1 :
+						await RisingEdge(self.bus.rdy)
+					self.bus.en.value =1
+					#self.bus.data.value =value
+					await ReadOnly()
+					self.callback(self.bus.value.value)
+					await RisingEdge(self.clk)
+					await NextTimeStep()
+					self.bus.en.value =0
+				else:
+					# print("NOT ENABLED")
+					await RisingEdge(self.clk)
+					# await NextTimeStep()
 	def set_en(self):
 		self.is_en=1
 	def reset_en(self):
@@ -118,10 +122,9 @@ class ConfigIODriver(BusDriver):
 
 	async def _driver_send(self,transaction,sync=True):
 		self.busy=1
-		# if(self.bus_rndm_delay):
-		# 	for i in range(random.randint(0,20)):
-		# 		await RisingEdge(self.clk)
-		await RisingEdge(self.clk)
+		if(self.bus_rndm_delay):
+			for i in range(random.randint(0,20)):
+				await RisingEdge(self.clk)
 		if self.bus.rdy.value !=1 :
 			await RisingEdge(self.bus.rdy)
 		self.bus.en.value =1
@@ -168,10 +171,10 @@ class ConfigIODriver(BusDriver):
 		# 	await self.await_cycle_completion(0)
 		
 		await RisingEdge(self.clk)
+		await NextTimeStep()#wait for next time step to again sample the signal
 		self.bus.en.value =0
 		if(op):
 			self.dutDrv._send(self.name,transaction)
-		await NextTimeStep()#wait for next time step to again sample the signal
 		self.busy=0
 		
 class dutDriver:

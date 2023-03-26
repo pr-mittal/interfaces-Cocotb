@@ -13,6 +13,7 @@ class IOMonitor(BusMonitor):
 		prev='Idle'
 		while True:
 			await FallingEdge(self.clock)
+			# await RisingEdge(self.clock)
 			await ReadOnly()
 			txn=(self.bus.en.value<<1)|self.bus.rdy.value
 			self._recv({'previous':prev,'current':phases[txn]})

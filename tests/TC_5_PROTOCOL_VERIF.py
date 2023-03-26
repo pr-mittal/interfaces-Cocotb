@@ -22,6 +22,8 @@ from bin.scoreboard import ScoreBoard
 from bin.monitor import IOMonitor
 import os
 from cocotb_coverage.coverage import CoverCross,CoverPoint,coverage_db
+from bin.utils import is_driver_empty
+
 # class en_rdy:
 # 	def __init__(self,name):
 # 		self.name=name
@@ -85,23 +87,19 @@ def din_prot_cover(txn):
 		)
 def dout_prot_cover(txn):
 	pass
-async def is_driver_empty(ifcDrv,dut):
-	i=0
-	while(True):
-		# print("Await Driver Send")
-		while(i<len(ifcDrv)):
-			if (len(ifcDrv[i]._sendQ)!=0 or ifcDrv[i].busy==1):
-				await RisingEdge(dut.CLK)
-				await ReadOnly()
-				i=0
-			else:
-				i+=1
-		break
+
 @cocotb.test()
 async def dut_test(dut):
 	cocotb.start_soon(Clock(dut.CLK, 5,'ns').start())
 	regressions=100
-	
+
+	dut.RST_N.value=1
+	await Timer(1,'ns')
+	dut.RST_N.value=0
+	await Timer(1,'ns')
+	await RisingEdge(dut.CLK)
+	dut.RST_N.value=1
+
 	outSB=ScoreBoard('dout')
 	cfgSB=ScoreBoard('cfg')
 	drv=dutDriver({'cfg':cfgSB,'dout':outSB})
@@ -113,16 +111,10 @@ async def dut_test(dut):
 	outDrv.set_bus_delay()
 	cfgdrv=ConfigIODriver(dut,'cfg',dut.CLK,drv,cfgSB)
 	# cfgdrv.set_bus_delay()
-	IOMonitor(dut,'len',dut.CLK,callback=len_prot_cover)
-	IOMonitor(dut,'din',dut.CLK,callback=din_prot_cover)
-	IOMonitor(dut,'dout',dut.CLK,callback=dout_prot_cover)
 
-	dut.RST_N.value=1
-	await Timer(1,'ns')
-	dut.RST_N.value=0
-	await Timer(1,'ns')
-	await RisingEdge(dut.CLK)
-	dut.RST_N.value=1
+	IOMonitor(dut,'len',dut.CLK,callback=len_prot_cover,reset_n=dut.RST_N)
+	IOMonitor(dut,'din',dut.CLK,callback=din_prot_cover,reset_n=dut.RST_N)
+	IOMonitor(dut,'dout',dut.CLK,callback=dout_prot_cover,reset_n=dut.RST_N)
 
 	# pause_mode=True #have to feed the value of length always
 	# sw_override=True
@@ -158,6 +150,7 @@ async def dut_test(dut):
 			while(drv.busy==0 and drv.programmed_length!=1):
 				await RisingEdge(dut.CLK)
 				await ReadOnly()
+			await NextTimeStep()
 		# k=random.randint(0,1)
 		# if(k):
 		# 	l=seq.length_sequencer(cfgdrv,ldrv,0,False,pause_mode,sw_override)
@@ -183,16 +176,22 @@ async def dut_test(dut):
 		packet=gen.get()
 		seq.cfg_address_4(cfgdrv,packet)
 		# if(packet['cfg_op']):
-		while(len(dindrv._sendQ)!=0 or len(ldrv._sendQ)!=0  or len(cfgdrv._sendQ)!=0 or dut.len_en!=0 or dut.din_en!=0 or dut.cfg_en!=0):
+		# while(len(dindrv._sendQ)!=0 or len(ldrv._sendQ)!=0  or len(cfgdrv._sendQ)!=0 or dut.len_en!=0 or dut.din_en!=0 or dut.cfg_en!=0):
+		while(len(dindrv._sendQ)!=0 or len(ldrv._sendQ)!=0  or len(cfgdrv._sendQ)!=0 or dindrv.busy!=0 or ldrv.busy!=0 or cfgdrv.busy!=0):
 		# while(drv.busy):
 			# await Timer(2,'ns')
-			if random.randint(0,1) and len(cfgdrv._sendQ)==0 and dut.cfg_en==0 and drv.current_count<drv.programmed_length-1 : 
+			# if random.randint(0,1) and len(cfgdrv._sendQ)==0 and dut.cfg_en==0 and drv.current_count<drv.programmed_length-1 : 
+			if random.randint(0,1) and len(cfgdrv._sendQ)==0 and cfgdrv.busy==0 and drv.current_count<drv.programmed_length-1 : 
 				r_cfg_pkt=gen.get_cfg_r()
 				# print(r_cfg_pkt)
 				seq.cfg_r(cfgdrv,r_cfg_pkt)
 				# pass
 			await RisingEdge(dut.CLK)
 			await ReadOnly()
+			await NextTimeStep()
+
+		await NextTimeStep()
+
 	#wait for all calculations to complete
 	# while len(expected_value)>0:
 	# 	await Timer(2,'ns')
@@ -201,6 +200,8 @@ async def dut_test(dut):
 		await RisingEdge(dut.CLK)
 		await ReadOnly()
 		# await Timer(2,'ns')
+	await NextTimeStep()
+
 	await Timer(1, units='ns')
 
 	coverage_db.report_coverage(cocotb.log.info,bins=True)

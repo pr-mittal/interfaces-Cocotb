@@ -11,8 +11,8 @@ class ScoreBoard:
             print(f'{self.name} Expected Value {expected} Actual Value {actual_value}')
         assert actual_value==expected,f"Scoreboard(SB) {self.name} Matching Failed , expected value {expected} : received value {actual_value}"
     def is_empty(self):
+        print(self.expected_value)
         if(self.expected_value):
             return len(self.expected_value)==0
         else:
-            print(self.expected_value)
             return True

@@ -242,7 +242,7 @@ module dut(CLK,
   else
     begin
       if (din_en) start_din <= `BSV_ASSIGNMENT_DELAY 1'd0;
-      else if((!busy && !pause) | (pause && programmed_length$EN ))
+      else if((!busy && !pause) || (pause && programmed_length$EN ) && !pause$EN)
       // if(din_en && current_count_PLUS_1_EQ_programmed_length___d8)
         begin
           start_din <= `BSV_ASSIGNMENT_DELAY 1'd1;
