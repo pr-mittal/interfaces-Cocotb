@@ -1,0 +1,23 @@
+<top abs_name="top" size="11" coverage="11" cover_percentage="100.0">
+  <sw size="2" coverage="2" cover_percentage="100.0" abs_name="top.sw" weight="1" at_least="1">
+    <bin0 bin="0" hits="52" abs_name="top.sw.bin0" />
+    <bin1 bin="1" hits="48" abs_name="top.sw.bin1" />
+  </sw>
+  <pause size="2" coverage="2" cover_percentage="100.0" abs_name="top.pause" weight="1" at_least="1">
+    <bin0 bin="0" hits="8" abs_name="top.pause.bin0" />
+    <bin1 bin="1" hits="92" abs_name="top.pause.bin1" />
+  </pause>
+  <cross size="4" coverage="4" cover_percentage="100.0" abs_name="top.cross">
+    <swp size="4" coverage="4" cover_percentage="100.0" abs_name="top.cross.swp" weight="1" at_least="1">
+      <bin0 bin="(0, 0)" hits="7" abs_name="top.cross.swp.bin0" />
+      <bin1 bin="(0, 1)" hits="45" abs_name="top.cross.swp.bin1" />
+      <bin2 bin="(1, 0)" hits="1" abs_name="top.cross.swp.bin2" />
+      <bin3 bin="(1, 1)" hits="47" abs_name="top.cross.swp.bin3" />
+    </swp>
+  </cross>
+  <cfg_r size="3" coverage="3" cover_percentage="100.0" abs_name="top.cfg_r" weight="1" at_least="1">
+    <bin0 bin="0" hits="23" abs_name="top.cfg_r.bin0" />
+    <bin1 bin="4" hits="18" abs_name="top.cfg_r.bin1" />
+    <bin2 bin="8" hits="18" abs_name="top.cfg_r.bin2" />
+  </cfg_r>
+</top>

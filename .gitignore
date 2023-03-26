@@ -1,1 +1,3 @@
-*~
+tests/sim_build/
+tests/__pycache__/
+tests/bin/__pycache__/

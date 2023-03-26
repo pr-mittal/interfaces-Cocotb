@@ -1,0 +1,6 @@
+<testsuites name="results">
+  <testsuite name="all" package="all">
+    <property name="random_seed" value="1679849105" />
+    <testcase name="dut_test" classname="TC_4_DATAPATH_VERIF" file="/home/siliconmerc/Desktop/dyumnin/interfaces-SiliconMerc/tests/TC_4_DATAPATH_VERIF.py" lineno="51" time="0.2561492919921875" sim_time_ns="3158.501" ratio_time="12330.703612080777" />
+  </testsuite>
+</testsuites>
